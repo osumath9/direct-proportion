@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>정비례 완벽 이해하기</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,8 +16,9 @@
             font-family: 'Noto Sans KR', sans-serif;
             background-color: #f8fafc;
             overflow-x: hidden;
-            /* S6 Lite 가로모드 최적화를 위해 세로 스크롤 최소화 */
+            -webkit-tap-highlight-color: transparent;
         }
+        
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
@@ -47,234 +48,223 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-slate-800 p-2 md:p-4">
+<body class="min-h-screen flex flex-col text-slate-800 p-4 md:p-6">
 
-    <!-- 글로벌 헤더 (컴팩트하게 조정) -->
-    <header class="max-w-[1200px] mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-2 mb-3 border-b-2 border-slate-200 pb-2">
+    <!-- 글로벌 헤더 -->
+    <header class="max-w-5xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-4 mb-4 border-b-2 border-slate-200 pb-4">
         <div class="text-left flex-shrink-0">
-            <h1 class="text-xl md:text-2xl font-black text-indigo-900 tracking-tight flex items-center gap-2">
+            <h1 class="text-2xl md:text-3xl font-black text-indigo-900 tracking-tight flex items-center gap-2">
                 🚀 정비례 마스터하기
             </h1>
         </div>
         
         <!-- 단계 표시기 -->
-        <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-100 w-full md:w-auto justify-center">
-            <div id="nav-phase-1" class="px-3 py-1 rounded-lg font-bold text-sm transition-all border-2">1. 정비례 뜻</div>
-            <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-            <div id="nav-phase-2" class="px-3 py-1 rounded-lg font-bold text-sm transition-all border-2">2. 정비례 판단</div>
-            <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-            <div id="nav-phase-3" class="px-3 py-1 rounded-lg font-bold text-sm transition-all border-2">3. 문제 풀어보기</div>
+        <div class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-2xl shadow-sm border border-slate-100 w-full md:w-auto justify-center">
+            <div id="nav-phase-1" class="px-3 py-1.5 rounded-xl font-bold text-base transition-all border-2">1. 정비례 뜻</div>
+            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+            <div id="nav-phase-2" class="px-3 py-1.5 rounded-xl font-bold text-base transition-all border-2">2. 판단 연습</div>
+            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+            <div id="nav-phase-3" class="px-3 py-1.5 rounded-xl font-bold text-base transition-all border-2">3. 문제 풀기</div>
         </div>
     </header>
 
-    <main class="max-w-[1200px] mx-auto w-full flex-grow relative flex flex-col">
+    <main class="max-w-5xl mx-auto w-full flex-grow relative flex flex-col">
         
         <!-- ==========================================
-             [1단계] 정비례 뜻 (S6 Lite 맞춤 2단 분할 레이아웃)
+             [1단계] 정비례 뜻
              ========================================== -->
-        <section id="phase-1" class="phase-section flex-grow grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch w-full">
-            <!-- 왼쪽: 시각화 표 -->
-            <div class="md:col-span-8 bg-white rounded-2xl p-5 shadow-md border border-slate-100 flex flex-col justify-center relative overflow-hidden">
-                <div class="relative py-[4.5rem] px-2" id="p1-table-wrapper">
+        <section id="phase-1" class="phase-section flex-col gap-6 items-center w-full">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 w-full relative">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-black text-indigo-700 mb-4">정비례란 무엇일까요?</h2>
+                    <div class="bg-indigo-50 border-2 border-indigo-100 rounded-2xl p-5 text-lg md:text-xl font-bold text-slate-800 leading-relaxed shadow-inner inline-block text-left max-w-3xl w-full">
+                        $x$의 값이 <strong class="text-indigo-600 text-2xl">2배, 3배...</strong>로 변함에 따라<br>
+                        $y$의 값도 똑같이 <strong class="text-orange-600 text-2xl">2배, 3배...</strong>로 변하는 관계를<br>
+                        우리는 <span class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg">정비례</span>라고 부릅니다.
+                    </div>
+                </div>
+
+                <div class="relative py-20 px-2 w-full" id="p1-table-wrapper">
                     <svg id="p1-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"></svg>
                     <div class="overflow-x-auto z-10 relative">
                         <table class="w-full text-center border-separate border-spacing-0 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
                             <thead>
                                 <tr class="bg-slate-50">
-                                    <th class="p-3 border-b border-r-2 border-slate-200 text-lg font-black text-slate-700 w-1/5">$x$</th>
-                                    <td id="p1-cell-x-1" class="p-3 border-b border-r border-slate-200 text-xl font-black text-slate-800 w-1/5">1</td>
-                                    <td id="p1-cell-x-2" class="p-3 border-b border-r border-slate-200 text-xl font-black text-slate-800 w-1/5">2</td>
-                                    <td id="p1-cell-x-3" class="p-3 border-b border-r border-slate-200 text-xl font-black text-slate-800 w-1/5">3</td>
-                                    <td id="p1-cell-x-4" class="p-3 border-b border-slate-200 text-xl font-black text-slate-800 w-1/5">4</td>
+                                    <th class="p-4 md:p-5 border-b border-r-2 border-slate-200 text-xl font-black text-slate-700 w-1/5">$x$</th>
+                                    <td id="p1-cell-x-1" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-black text-slate-800 w-1/5">1</td>
+                                    <td id="p1-cell-x-2" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-black text-slate-800 w-1/5">2</td>
+                                    <td id="p1-cell-x-3" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-black text-slate-800 w-1/5">3</td>
+                                    <td id="p1-cell-x-4" class="p-4 md:p-5 border-b border-slate-200 text-2xl font-black text-slate-800 w-1/5">4</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white">
-                                    <th class="p-3 border-r-2 border-slate-200 text-lg font-black text-indigo-700">$y$</th>
-                                    <td id="p1-cell-y-1" class="p-3 border-r border-slate-200 text-xl font-black text-indigo-600">2</td>
-                                    <td id="p1-cell-y-2" class="p-3 border-r border-slate-200 text-xl font-black text-indigo-600">4</td>
-                                    <td id="p1-cell-y-3" class="p-3 border-r border-slate-200 text-xl font-black text-indigo-600">6</td>
-                                    <td id="p1-cell-y-4" class="p-3 text-xl font-black text-indigo-600">8</td>
+                                    <th class="p-4 md:p-5 border-r-2 border-slate-200 text-xl font-black text-indigo-700">$y$</th>
+                                    <td id="p1-cell-y-1" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600">2</td>
+                                    <td id="p1-cell-y-2" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600">4</td>
+                                    <td id="p1-cell-y-3" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600">6</td>
+                                    <td id="p1-cell-y-4" class="p-4 md:p-5 text-2xl font-black text-indigo-600">8</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
-            <!-- 오른쪽: 개념 설명 및 넘어가기 버튼 -->
-            <div class="md:col-span-4 bg-white rounded-2xl p-6 shadow-md border border-slate-100 flex flex-col justify-between">
-                <div>
-                    <h2 class="text-2xl font-black text-indigo-700 mb-4">정비례란 무엇일까요?</h2>
-                    <div class="bg-indigo-50 border-2 border-indigo-100 rounded-xl p-5 text-base md:text-lg font-bold text-slate-800 leading-relaxed shadow-inner">
-                        $x$의 값이 <strong class="text-indigo-600 text-xl">2배, 3배...</strong>로 변함에 따라<br>
-                        $y$의 값도 똑같이 <strong class="text-orange-600 text-xl">2배, 3배...</strong>로 변하는 관계를<br>
-                        우리는 <span class="bg-indigo-600 text-white px-2 py-0.5 rounded-lg text-base">정비례</span>라고 부릅니다.
-                    </div>
+
+                <div class="mt-8 flex justify-center border-t border-slate-100 pt-6">
+                    <button onclick="switchPhase(2)" class="w-full md:w-2/3 py-5 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold rounded-2xl shadow-lg transition-transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                        이해했어요! 정비례 판단 연습하러 가기
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
                 </div>
-                <button onclick="switchPhase(2)" class="mt-4 w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold rounded-xl shadow-lg transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                    판단 연습하러 가기
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </button>
             </div>
         </section>
 
         <!-- ==========================================
-             [2단계] 정비례 판단 (S6 Lite 좌우 분할 구조 적용)
+             [2단계] 정비례 판단 
              ========================================== -->
-        <section id="phase-2" class="phase-section flex-grow grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch w-full">
-            <!-- 왼쪽 파트 (8열): 상황 설명 및 표 영역 -->
-            <div class="md:col-span-8 bg-white rounded-2xl p-5 shadow-md border border-slate-100 flex flex-col justify-between relative">
-                <div>
-                    <div class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
-                        <h2 class="text-xl md:text-2xl font-black text-indigo-700 flex items-center gap-2">
-                            <span class="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center text-lg">🔍</span>
-                            정비례 판단 연습하기
-                        </h2>
-                        <span id="p2-quiz-counter" class="bg-slate-100 text-slate-600 font-bold px-3 py-1.5 rounded-lg text-sm border border-slate-200">1 / 5</span>
-                    </div>
-                    <p class="text-base text-slate-800 font-bold leading-relaxed bg-indigo-50 p-3 rounded-xl border border-indigo-100 shadow-sm">
-                        아래 표의 화살표 관계를 자세히 보고, 이 관계가 <strong class="text-indigo-600">정비례</strong>인지 판단해 보세요.
-                    </p>
+        <section id="phase-2" class="phase-section flex-col gap-6 items-center w-full">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 w-full relative">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                    <h2 class="text-2xl md:text-3xl font-black text-indigo-700 flex items-center gap-3">
+                        <span class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center text-2xl">🔍</span>
+                        정비례 판단 연습하기
+                    </h2>
+                    <span id="p2-quiz-counter" class="bg-slate-100 text-slate-600 font-bold px-4 py-2 rounded-xl text-lg border border-slate-200">1 / 5</span>
                 </div>
+                <p class="text-lg md:text-xl text-slate-800 font-bold leading-relaxed bg-indigo-50 p-4 rounded-xl border border-indigo-100 shadow-sm">
+                    아래 표의 화살표 관계를 자세히 보고, 이 관계가 <strong class="text-indigo-600">정비례</strong>인지 판단해 보세요.
+                </p>
 
-                <div class="relative py-[4.5rem] px-2 flex-grow flex items-center" id="p2-table-wrapper">
+                <!-- 표 영역 -->
+                <div class="relative py-[5.5rem] px-2 w-full" id="p2-table-wrapper">
                     <svg id="p2-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"></svg>
                     <div class="overflow-x-auto z-10 relative w-full">
                         <table class="w-full text-center border-separate border-spacing-0 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
                             <thead>
                                 <tr class="bg-slate-50">
-                                    <th class="p-3 border-b border-r-2 border-slate-200 text-base font-black text-slate-600 w-1/5">$x$</th>
-                                    <td id="p2-cell-x-1" class="p-3 border-b border-r border-slate-200 text-lg font-bold text-slate-800 w-1/5">1</td>
-                                    <td id="p2-cell-x-2" class="p-3 border-b border-r border-slate-200 text-lg font-bold text-slate-800 w-1/5">2</td>
-                                    <td id="p2-cell-x-3" class="p-3 border-b border-r border-slate-200 text-lg font-bold text-slate-800 w-1/5">3</td>
-                                    <td id="p2-cell-x-4" class="p-3 border-b border-slate-200 text-lg font-bold text-slate-800 w-1/5">4</td>
+                                    <th class="p-4 md:p-5 border-b border-r-2 border-slate-200 text-xl font-black text-slate-600 w-1/5">$x$</th>
+                                    <td id="p2-cell-x-1" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-bold text-slate-800 w-1/5">1</td>
+                                    <td id="p2-cell-x-2" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-bold text-slate-800 w-1/5">2</td>
+                                    <td id="p2-cell-x-3" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-bold text-slate-800 w-1/5">3</td>
+                                    <td id="p2-cell-x-4" class="p-4 md:p-5 border-b border-slate-200 text-2xl font-bold text-slate-800 w-1/5">4</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white">
-                                    <th class="p-3 border-r-2 border-slate-200 text-base font-black text-indigo-700">$y$</th>
-                                    <td id="p2-cell-y-1" class="p-3 border-r border-slate-200 text-lg font-black text-indigo-600"></td>
-                                    <td id="p2-cell-y-2" class="p-3 border-r border-slate-200 text-lg font-black text-indigo-600"></td>
-                                    <td id="p2-cell-y-3" class="p-3 border-r border-slate-200 text-lg font-black text-indigo-600"></td>
-                                    <td id="p2-cell-y-4" class="p-3 text-lg font-black text-indigo-600"></td>
+                                    <th class="p-4 md:p-5 border-r-2 border-slate-200 text-xl font-black text-indigo-700">$y$</th>
+                                    <td id="p2-cell-y-1" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600"></td>
+                                    <td id="p2-cell-y-2" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600"></td>
+                                    <td id="p2-cell-y-3" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600"></td>
+                                    <td id="p2-cell-y-4" class="p-4 md:p-5 text-2xl font-black text-indigo-600"></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- 오른쪽 파트 (4열): O/X 판단 및 피드백 -->
-            <div class="md:col-span-4 bg-white rounded-2xl p-5 shadow-md border border-slate-100 flex flex-col justify-between items-center h-full">
-                <div class="w-full flex flex-col items-center mt-2">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">
+                <!-- 퀴즈 영역 (표 바로 아래) -->
+                <div class="mt-6 flex flex-col items-center border-t border-slate-100 pt-6">
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 text-center">
                         이 표는 <strong class="text-indigo-600">정비례</strong> 관계인가요?
                     </h3>
-                    <div class="flex gap-3 w-full">
-                        <button class="p2-btn-judge flex-1 py-4 bg-white border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 font-black text-base rounded-xl transition-all shadow-sm" data-ans="yes">
+                    <div class="flex gap-4 w-full md:w-2/3">
+                        <button class="p2-btn-judge flex-1 py-5 bg-white border-4 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 font-black text-xl rounded-2xl transition-all shadow-sm" data-ans="yes">
                             ⭕ 네
                         </button>
-                        <button class="p2-btn-judge flex-1 py-4 bg-white border-2 border-slate-200 hover:border-red-500 hover:bg-red-50 text-slate-700 font-black text-base rounded-xl transition-all shadow-sm" data-ans="no">
+                        <button class="p2-btn-judge flex-1 py-5 bg-white border-4 border-slate-200 hover:border-red-500 hover:bg-red-50 text-slate-700 font-black text-xl rounded-2xl transition-all shadow-sm" data-ans="no">
                             ❌ 아니오
                         </button>
                     </div>
+                    
+                    <div id="p2-feedback" class="mt-6 w-full md:w-2/3 hidden flex-col justify-center"></div>
+                    
+                    <button id="p2-btn-next" class="mt-6 w-full md:w-2/3 py-5 bg-slate-800 hover:bg-slate-900 text-white text-xl font-bold rounded-2xl hidden transition-all shadow-lg">
+                        다음 문제로 ➔
+                    </button>
                 </div>
-                
-                <div id="p2-feedback" class="mt-4 w-full hidden flex-grow flex flex-col justify-center"></div>
-                
-                <button id="p2-btn-next" class="mt-4 w-full py-3.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl hidden transition-all shadow-md">
-                    다음 문제로 ➔
-                </button>
             </div>
         </section>
 
         <!-- ==========================================
-             [3단계] 문제 풀어보기 (상황 1, 2, 3) 좌우 레이아웃 최적화
+             [3단계] 문제 풀어보기 
              ========================================== -->
-        <section id="phase-3" class="phase-section flex-grow grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch w-full">
-            <!-- 왼쪽 파트 (8열): 상황 설명 및 표 채우기 -->
-            <div class="md:col-span-8 flex flex-col gap-3">
-                <div class="bg-indigo-600 rounded-xl p-3 text-white text-center shadow-md">
-                    <h2 class="text-xl font-black">✍️ 실전 문제 풀어보기</h2>
+        <section id="phase-3" class="phase-section flex-col gap-6 items-center w-full">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 w-full relative">
+                <div class="flex items-center gap-3 mb-4 border-b border-slate-100 pb-3">
+                    <span class="bg-indigo-600 text-white font-extrabold px-4 py-1.5 rounded-xl text-lg shadow-md" id="p3-stage-badge">문제 1</span>
+                    <h2 id="p3-stage-title" class="text-2xl md:text-3xl font-bold text-slate-800"></h2>
                 </div>
-                <div class="bg-white rounded-2xl p-5 shadow-md border border-slate-100 flex flex-col flex-grow relative">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="bg-indigo-100 text-indigo-700 font-extrabold px-3 py-1 rounded-lg text-sm" id="p3-stage-badge">문제 1</span>
-                        <h2 id="p3-stage-title" class="text-lg font-bold text-slate-800"></h2>
-                    </div>
-                    <p id="p3-stage-desc" class="text-base text-slate-800 font-bold leading-relaxed bg-indigo-50 p-3 rounded-xl border border-indigo-200 mb-2 shadow-sm"></p>
+                <p id="p3-stage-desc" class="text-lg md:text-xl text-slate-800 font-bold leading-relaxed bg-indigo-50 p-4 rounded-xl border border-indigo-100 shadow-sm"></p>
 
-                    <!-- 표 영역 -->
-                    <div class="relative py-[4.5rem] px-2 flex-grow flex items-center" id="p3-table-wrapper">
-                        <svg id="p3-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"></svg>
-                        <div class="overflow-x-auto z-10 relative w-full">
-                            <table class="w-full text-center border-separate border-spacing-0 rounded-2xl overflow-hidden border-2 border-slate-200">
-                                <thead>
-                                    <tr class="bg-slate-50/80">
-                                        <th id="p3-hdr-x" class="p-3 border-b border-r-2 border-slate-200 text-sm font-black text-slate-600 w-1/5"></th>
-                                        <td id="p3-cell-x-1" class="p-3 border-b border-r border-slate-200 text-lg font-extrabold text-slate-800 w-1/5">1</td>
-                                        <td id="p3-cell-x-2" class="p-3 border-b border-r border-slate-200 text-lg font-extrabold text-slate-800 w-1/5">2</td>
-                                        <td id="p3-cell-x-3" class="p-3 border-b border-r border-slate-200 text-lg font-extrabold text-slate-800 w-1/5">3</td>
-                                        <td id="p3-cell-x-4" class="p-3 border-b border-slate-200 text-lg font-extrabold text-slate-800 w-1/5">4</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white">
-                                        <th id="p3-hdr-y" class="p-3 border-r-2 border-slate-200 text-sm font-black text-indigo-700"></th>
-                                        <td id="p3-cell-y-1" class="p-2 border-r border-slate-200">
-                                            <input type="number" id="p3-input-y-1" class="w-full text-center text-lg font-extrabold text-indigo-700 bg-indigo-50/70 border border-indigo-200 rounded-lg py-1 focus:ring-2 focus:ring-indigo-400">
-                                        </td>
-                                        <td id="p3-cell-y-2" class="p-2 border-r border-slate-200">
-                                            <input type="number" id="p3-input-y-2" class="w-full text-center text-lg font-extrabold text-indigo-700 bg-indigo-50/70 border border-indigo-200 rounded-lg py-1 focus:ring-2 focus:ring-indigo-400">
-                                        </td>
-                                        <td id="p3-cell-y-3" class="p-2 border-r border-slate-200">
-                                            <input type="number" id="p3-input-y-3" class="w-full text-center text-lg font-extrabold text-indigo-700 bg-indigo-50/70 border border-indigo-200 rounded-lg py-1 focus:ring-2 focus:ring-indigo-400">
-                                        </td>
-                                        <td id="p3-cell-y-4" class="p-2">
-                                            <input type="number" id="p3-input-y-4" class="w-full text-center text-lg font-extrabold text-indigo-700 bg-indigo-50/70 border border-indigo-200 rounded-lg py-1 focus:ring-2 focus:ring-indigo-400">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <!-- 표 영역 -->
+                <div class="relative py-[5.5rem] px-2 w-full mt-4" id="p3-table-wrapper">
+                    <svg id="p3-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"></svg>
+                    <div class="overflow-x-auto z-10 relative w-full">
+                        <table class="w-full text-center border-separate border-spacing-0 rounded-2xl overflow-hidden border-2 border-slate-200">
+                            <thead>
+                                <tr class="bg-slate-50/80">
+                                    <th id="p3-hdr-x" class="p-4 md:p-5 border-b border-r-2 border-slate-200 text-xl font-black text-slate-600 w-1/5"></th>
+                                    <td id="p3-cell-x-1" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">1</td>
+                                    <td id="p3-cell-x-2" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">2</td>
+                                    <td id="p3-cell-x-3" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">3</td>
+                                    <td id="p3-cell-x-4" class="p-4 md:p-5 border-b border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">4</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white">
+                                    <th id="p3-hdr-y" class="p-4 md:p-5 border-r-2 border-slate-200 text-xl font-black text-indigo-700"></th>
+                                    <td id="p3-cell-y-1" class="p-3 md:p-4 border-r border-slate-200">
+                                        <input type="text" inputmode="text" id="p3-input-y-1" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none">
+                                    </td>
+                                    <td id="p3-cell-y-2" class="p-3 md:p-4 border-r border-slate-200">
+                                        <input type="text" inputmode="text" id="p3-input-y-2" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none">
+                                    </td>
+                                    <td id="p3-cell-y-3" class="p-3 md:p-4 border-r border-slate-200">
+                                        <input type="text" inputmode="text" id="p3-input-y-3" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none">
+                                    </td>
+                                    <td id="p3-cell-y-4" class="p-3 md:p-4">
+                                        <input type="text" inputmode="text" id="p3-input-y-4" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- 오른쪽 파트 (4열): 컨트롤 타워 -->
-            <div class="md:col-span-4 bg-white rounded-2xl p-5 shadow-md border border-slate-100 flex flex-col justify-between h-full">
                 <!-- 제출부 -->
-                <div class="w-full">
-                    <button id="p3-btn-check" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold rounded-xl shadow-md transition-all">
+                <div class="w-full flex flex-col items-center mt-6">
+                    <button id="p3-btn-check" class="w-full md:w-2/3 py-5 bg-indigo-600 hover:bg-indigo-700 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-lg transition-all">
                         🔍 표 정답 확인하기
                     </button>
-                    <p id="p3-msg-error" class="mt-3 text-sm font-bold text-red-500 text-center hidden bounce-in bg-red-50 px-3 py-2 rounded-lg border border-red-200 w-full">
+                    <p id="p3-msg-error" class="mt-4 text-lg font-bold text-red-500 text-center hidden bounce-in bg-red-50 px-4 py-3 rounded-xl border border-red-200 w-full md:w-2/3">
                         ⚠️ 계산이 틀린 곳이 있습니다!
                     </p>
                 </div>
 
-                <!-- 정비례 판단 -->
-                <div id="p3-judgment-area" class="mt-4 flex-col items-center flex-grow hidden">
-                    <h3 class="text-base font-bold text-slate-800 mb-3 text-center">
+                <!-- 정비례 판단 (표와 버튼 바로 아래 위치) -->
+                <div id="p3-judgment-area" class="mt-8 flex-col items-center w-full border-t border-slate-100 pt-6 hidden">
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 text-center">
                         이 관계는 <span class="text-indigo-600 font-extrabold">정비례</span>인가요?
                     </h3>
-                    <div class="flex gap-2 w-full">
-                        <button class="p3-btn-judge flex-1 py-3 bg-white border-2 border-slate-200 hover:border-emerald-500 text-slate-700 font-bold text-sm rounded-lg" data-ans="yes">⭕ 맞습니다</button>
-                        <button class="p3-btn-judge flex-1 py-3 bg-white border-2 border-slate-200 hover:border-red-500 text-slate-700 font-bold text-sm rounded-lg" data-ans="no">❌ 아닙니다</button>
+                    <div class="flex gap-4 w-full md:w-2/3 mx-auto">
+                        <button class="p3-btn-judge flex-1 py-5 bg-white border-4 border-slate-200 hover:border-emerald-500 text-slate-700 font-bold text-xl rounded-2xl" data-ans="yes">⭕ 맞습니다</button>
+                        <button class="p3-btn-judge flex-1 py-5 bg-white border-4 border-slate-200 hover:border-red-500 text-slate-700 font-bold text-xl rounded-2xl" data-ans="no">❌ 아닙니다</button>
                     </div>
-                    <div id="p3-judge-feedback" class="mt-3 w-full hidden flex-grow flex-col justify-center"></div>
-                    <button id="p3-btn-next" class="mt-3 w-full py-3.5 bg-slate-800 text-white text-sm font-bold rounded-xl hidden shadow">다음 문제 ➔</button>
+                    
+                    <div id="p3-judge-feedback" class="mt-6 w-full md:w-2/3 mx-auto hidden flex-col justify-center"></div>
+                    
+                    <button id="p3-btn-next" class="mt-6 w-full md:w-2/3 mx-auto py-5 bg-slate-800 text-white text-xl font-bold rounded-2xl hidden shadow-lg">다음 문제 ➔</button>
                 </div>
             </div>
         </section>
 
         <!-- 완료 화면 -->
-        <div id="final-summary" class="phase-section flex-col gap-4 items-center w-full max-w-4xl mx-auto mt-4">
-            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl p-8 shadow-2xl text-white w-full text-center">
-                <h2 class="text-3xl font-black mb-4 text-yellow-300">🎉 모든 학습을 완료했습니다!</h2>
-                <div class="bg-white/10 rounded-2xl p-6 backdrop-blur-sm border border-white/20 mb-6 inline-block text-left w-full max-w-2xl">
-                    <h3 class="text-xl font-bold mb-3 flex items-center gap-2">📌 기억하세요!</h3>
-                    <ul class="text-base leading-relaxed space-y-2 opacity-95">
+        <div id="final-summary" class="phase-section flex-col gap-6 items-center w-full max-w-5xl mx-auto mt-6">
+            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl p-10 md:p-14 shadow-2xl text-white w-full text-center">
+                <h2 class="text-4xl md:text-5xl font-black mb-6 text-yellow-300">🎉 모든 학습을 완료했습니다!</h2>
+                <div class="bg-white/10 rounded-3xl p-8 md:p-10 backdrop-blur-sm border border-white/20 mb-8 inline-block text-left w-full max-w-3xl">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-5 flex items-center gap-3">📌 기억하세요!</h3>
+                    <ul class="text-lg md:text-xl leading-relaxed space-y-4 opacity-95">
                         <li>✔️ $x$가 2배, 3배... 일 때 $y$도 2배, 3배... 가 되어야 <strong>정비례</strong>입니다.</li>
                         <li>✔️ 관계식은 항상 <strong>$y = ax$</strong> ($a \neq 0$) 형태입니다.</li>
                         <li>✔️ $a$가 음수($-2, -3$ 등)여도 정비례입니다.</li>
@@ -282,7 +272,7 @@
                     </ul>
                 </div>
                 <div>
-                    <button onclick="location.reload()" class="px-6 py-3 bg-white text-indigo-700 text-lg font-bold rounded-xl shadow-lg hover:bg-slate-100 transition-colors">
+                    <button onclick="location.reload()" class="px-8 py-5 bg-white text-indigo-700 text-xl font-bold rounded-2xl shadow-xl hover:bg-slate-100 transition-colors">
                         처음부터 다시 복습하기
                     </button>
                 </div>
@@ -324,11 +314,11 @@
             for(let i=1; i<=3; i++) {
                 const nav = document.getElementById(`nav-phase-${i}`);
                 if(i === phaseNum) {
-                    nav.className = "px-3 py-1 rounded-lg font-black text-sm transition-all border-2 border-indigo-600 bg-indigo-50 text-indigo-700";
+                    nav.className = "px-4 py-2 rounded-xl font-black text-base transition-all border-2 border-indigo-600 bg-indigo-50 text-indigo-700";
                 } else if(i < phaseNum) {
-                    nav.className = "px-3 py-1 rounded-lg font-bold text-sm transition-all border-2 border-emerald-500 bg-emerald-500 text-white";
+                    nav.className = "px-4 py-2 rounded-xl font-bold text-base transition-all border-2 border-emerald-500 bg-emerald-500 text-white";
                 } else {
-                    nav.className = "px-3 py-1 rounded-lg font-bold text-sm transition-all border-2 border-slate-200 bg-white text-slate-400";
+                    nav.className = "px-4 py-2 rounded-xl font-bold text-base transition-all border-2 border-slate-200 bg-white text-slate-400";
                 }
             }
 
@@ -339,10 +329,12 @@
             } else if (phaseNum === 3) {
                 initPhase3();
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // 스크롤이 이상하게 튀는 것을 방지하기 위해 0,0으로 강제 고정 
+            window.scrollTo(0, 0); 
         }
 
-        // 공통 화살표 그리기 엔진 (정점 Apex 텍스트 정렬 개선 - 세로 여백 최소화)
+        // 공통 화살표 그리기 엔진 
+        // 핵심 로직: 모든 선(Path)을 먼저 그리고, 모든 글씨(Label)를 나중에 그려 글씨 겹침 완벽 해결
         function drawArrowCurve(svg, prefix, fromCol, toCol, isTop, textLabel, colorHex) {
             const containerRect = svg.getBoundingClientRect();
             const fromId = `${prefix}-cell-${isTop ? 'x' : 'y'}-${fromCol}`;
@@ -363,12 +355,26 @@
             const midX = (startX + endX) / 2;
             const dist = toCol - fromCol;
             
-            // 제어점 높이 계산을 가로 넓이에 비례하도록 정교하게 수정 (최대치 제한)
-            const archHeight = 60 + (dist * 20); 
+            // 크기 확대에 맞게 커브 높이도 여유있게 증가
+            const archHeight = 75 + (dist * 25); 
             const controlY = startY + (isTop ? -archHeight : archHeight);
 
-            // 베지에 곡선의 실제 최고점(Apex) 위치 계산 = (startY + controlY) / 2
+            // 베지에 곡선의 실제 최고점(Apex) 위치 계산
             const apexY = startY + (isTop ? -archHeight/2 : archHeight/2);
+
+            // SVG 내 그룹화 영역 생성 (Z-index 문제 해결을 위해 Paths는 뒤에, Labels는 앞에 배치)
+            let pathsGroup = svg.querySelector('.paths-group');
+            let labelsGroup = svg.querySelector('.labels-group');
+            
+            if (!pathsGroup) {
+                pathsGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                pathsGroup.setAttribute("class", "paths-group");
+                svg.appendChild(pathsGroup);
+                
+                labelsGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                labelsGroup.setAttribute("class", "labels-group");
+                svg.appendChild(labelsGroup);
+            }
 
             const markerId = `arrowhead-${prefix}-${colorHex.replace('#','')}`;
             if (!document.getElementById(markerId)) {
@@ -381,34 +387,36 @@
             path.setAttribute("d", `M ${startX} ${startY} Q ${midX} ${controlY} ${endX} ${endY}`);
             path.setAttribute("fill", "none");
             path.setAttribute("stroke", colorHex);
-            path.setAttribute("stroke-width", "3");
+            path.setAttribute("stroke-width", "4");
             path.setAttribute("class", "arrow-path");
             path.setAttribute("marker-end", `url(#${markerId})`);
 
-            // 텍스트 위치를 ApexY를 기준으로 배치하여 상하 여백 낭비 제거
+            // 텍스트 배경 (가독성 보호용 알약)
             const textBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            const txtWidth = textLabel.length > 5 ? 88 : 52;
+            const txtWidth = textLabel.length > 5 ? 110 : 70;
             textBg.setAttribute("x", midX - txtWidth/2);
-            textBg.setAttribute("y", apexY - 12); // 높이의 절반 위로 오프셋
+            textBg.setAttribute("y", apexY - 15); 
             textBg.setAttribute("width", txtWidth);
-            textBg.setAttribute("height", "24");
+            textBg.setAttribute("height", "30");
             textBg.setAttribute("fill", "#ffffff");
             textBg.setAttribute("stroke", colorHex);
-            textBg.setAttribute("stroke-width", "1.5");
-            textBg.setAttribute("rx", "12");
+            textBg.setAttribute("stroke-width", "2");
+            textBg.setAttribute("rx", "15");
 
+            // 텍스트
             const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
             txt.setAttribute("x", midX);
-            txt.setAttribute("y", apexY + 5); // 텍스트 베이스라인 맞춤
+            txt.setAttribute("y", apexY + 6); 
             txt.setAttribute("fill", colorHex);
-            txt.setAttribute("font-size", "14");
+            txt.setAttribute("font-size", "16");
             txt.setAttribute("font-weight", "900");
             txt.setAttribute("text-anchor", "middle");
             txt.textContent = textLabel;
 
-            svg.appendChild(path);
-            svg.appendChild(textBg);
-            svg.appendChild(txt);
+            // 라인들은 Paths 그룹에, 글씨는 Labels 그룹에 넣어 겹침 완벽 방지
+            pathsGroup.appendChild(path);
+            labelsGroup.appendChild(textBg);
+            labelsGroup.appendChild(txt);
         }
 
         // ==========================================
@@ -479,11 +487,11 @@
                 if(isCorrect) {
                     e.currentTarget.classList.add(isYes ? 'bg-emerald-50' : 'bg-red-50', isYes ? 'border-emerald-500' : 'border-red-500');
                     fb.innerHTML = `
-                        <div class="bounce-in text-center py-2 flex flex-col items-center gap-1.5 w-full bg-emerald-50 border border-emerald-200 rounded-xl px-3">
-                            <span class="text-emerald-600 font-extrabold text-xl md:text-2xl flex items-center justify-center gap-2">
+                        <div class="bounce-in text-center py-4 flex flex-col items-center gap-3 w-full bg-emerald-50 border-2 border-emerald-200 rounded-2xl px-4">
+                            <span class="text-emerald-600 font-extrabold text-2xl md:text-3xl flex items-center justify-center gap-2">
                                 🎉 정답입니다! 🎆
                             </span>
-                            <span class="text-slate-800 font-bold text-sm md:text-base mt-1" id="p2-hint-math">
+                            <span class="text-slate-800 font-bold text-lg md:text-xl mt-1" id="p2-hint-math">
                                 ${quiz.hint.replace('정답입니다! ', '')}
                             </span>
                         </div>
@@ -494,7 +502,7 @@
                     renderMath();
                 } else {
                     e.currentTarget.classList.add('bg-red-50', 'border-red-500');
-                    fb.innerHTML = `<div class="p-3 bg-red-50 border border-red-200 rounded-xl bounce-in text-center w-full"><span class="text-red-600 font-bold text-sm">앗, 틀렸습니다. 위아래 화살표 규칙이 같은지 보세요!</span></div>`;
+                    fb.innerHTML = `<div class="p-5 bg-red-50 border-2 border-red-200 rounded-2xl bounce-in text-center w-full"><span class="text-red-600 font-bold text-lg">앗, 틀렸습니다. 위아래 화살표 규칙이 같은지 보세요!</span></div>`;
                     fb.classList.remove('hidden');
                     fb.classList.add('flex');
                     
@@ -567,11 +575,12 @@
             document.getElementById('p3-hdr-x').innerHTML = stage.xHeader;
             document.getElementById('p3-hdr-y').innerHTML = stage.yHeader;
 
+            // type을 text로 바꾸어 음수 입력이 자유롭도록 하였으므로 입력값 초기화
             for(let i=1; i<=4; i++) {
                 const inp = document.getElementById(`p3-input-y-${i}`);
                 inp.value = '';
                 inp.disabled = false;
-                inp.className = "w-full text-center text-lg font-extrabold text-indigo-700 bg-indigo-50/70 border border-indigo-200 rounded-lg py-1 focus:ring-2 focus:ring-indigo-400";
+                inp.className = "w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none";
             }
 
             p3ArrowDrawn = false;
@@ -597,7 +606,9 @@
             let allCorrect = true;
             for(let i=1; i<=4; i++) {
                 const inp = document.getElementById(`p3-input-y-${i}`);
-                if(parseInt(inp.value) !== stage.calc(i)) {
+                // 텍스트 입력을 정수로 파싱하여 비교 (음수 부호 등 허용)
+                const userValue = parseInt(inp.value, 10);
+                if(isNaN(userValue) || userValue !== stage.calc(i)) {
                     allCorrect = false;
                     inp.classList.add('bg-red-50', 'border-red-400', 'text-red-600');
                 } else {
@@ -643,11 +654,11 @@
                 if(isCorrect) {
                     e.currentTarget.classList.add(isYes ? 'bg-emerald-50' : 'bg-red-50', isYes ? 'border-emerald-500' : 'border-red-500');
                     fb.innerHTML = `
-                        <div class="bounce-in text-center py-2 flex flex-col items-center gap-1.5 w-full bg-emerald-50 border border-emerald-200 rounded-xl px-3">
-                            <span class="text-emerald-600 font-extrabold text-xl md:text-2xl flex items-center justify-center gap-2">
+                        <div class="bounce-in text-center py-4 flex flex-col items-center gap-3 w-full bg-emerald-50 border-2 border-emerald-200 rounded-2xl px-4">
+                            <span class="text-emerald-600 font-extrabold text-2xl md:text-3xl flex items-center justify-center gap-2">
                                 🎉 정답입니다! 🎆
                             </span>
-                            <span class="text-slate-800 font-bold text-sm md:text-base mt-1" id="p3-hint-math">
+                            <span class="text-slate-800 font-bold text-lg md:text-xl mt-1" id="p3-hint-math">
                                 ${stage.hint.replace('정답입니다! ', '')}
                             </span>
                         </div>
@@ -658,7 +669,7 @@
                     renderMath();
                 } else {
                     e.currentTarget.classList.add('bg-red-50', 'border-red-500');
-                    fb.innerHTML = `<div class="p-3 bg-red-50 border border-red-200 rounded-xl bounce-in text-center w-full"><span class="text-red-600 font-bold text-sm">앗, 틀렸습니다! 표 위아래 규칙이 같은지 확인해보세요.</span></div>`;
+                    fb.innerHTML = `<div class="p-4 bg-red-50 border-2 border-red-200 rounded-2xl bounce-in text-center w-full"><span class="text-red-600 font-bold text-lg">앗, 틀렸습니다! 표 위아래 규칙이 같은지 확인해보세요.</span></div>`;
                     fb.classList.remove('hidden');
                     fb.classList.add('flex');
                     
