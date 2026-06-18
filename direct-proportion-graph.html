@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정비례 그래프 그리기 탐구</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        html {
+            height: 100%;
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            overscroll-behavior: none; 
+            height: 100dvh; /* 브라우저 주소창을 고려한 동적 뷰포트 높이 적용 */
+            min-height: 100dvh;
+        }
+        /* iOS Safari 호환성 추가 */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                height: -webkit-fill-available;
+            }
+        }
+        canvas {
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        /* 커스텀 슬라이더 스타일 */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col overflow-hidden">
+
+    <!-- 헤더 영역 -->
+    <header class="bg-indigo-700 text-white shadow-md py-1.5 px-3 md:px-4 flex-shrink-0 z-20 relative">
+        <div class="max-w-[1800px] mx-auto flex justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="bg-indigo-900 text-indigo-200 text-[10px] md:text-xs font-bold px-2 py-1 rounded border border-indigo-500 hidden sm:inline-block">중1</span>
+                <h1 class="text-lg md:text-xl font-extrabold tracking-tight">정비례 그래프 그리기 탐구</h1>
+            </div>
+            <div class="text-[10px] md:text-xs text-indigo-100 hidden md:block">
+                <p>정비례 관계를 찾아 좌표평면에 그려보세요</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- [뷰 1] 메인 탐구 영역 -->
+    <main id="view-exploration" class="flex-grow w-full max-w-[1800px] mx-auto p-1.5 md:p-2 flex flex-col md:flex-row gap-1.5 md:gap-2 overflow-hidden h-full">
+        
+        <!-- 좌측 패널: 표 및 조작부 (태블릿 세로 높이 압축 최적화) -->
+        <section class="bg-white p-2.5 md:p-3 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-1.5 md:w-[35%] lg:w-[30%] flex-shrink-0 overflow-y-auto relative z-10 h-full">
+            
+            <div class="flex justify-between items-end px-1 mt-0.5">
+                <div>
+                    <div class="text-[10px] font-bold text-slate-400 mb-0.5">현재 탐구 중인 그래프</div>
+                    <div id="equation-display" class="text-xl md:text-2xl font-black text-indigo-700 tracking-wide h-6 md:h-7"></div>
+                </div>
+                <span id="score-badge" class="bg-slate-100 text-slate-600 px-2 py-1 rounded-lg text-[10px] md:text-xs font-bold border border-slate-200 mb-0.5">
+                    맞춘 점: 0 / 5
+                </span>
+            </div>
+
+            <!-- 정비례 대응표 -->
+            <div class="relative w-full pt-7 pb-8 px-1 flex-shrink-0">
+                
+                <!-- 상단 화살표 -->
+                <div class="absolute top-0 left-0 w-full h-7 pointer-events-none">
+                    <svg class="hidden">
+                        <defs><marker id="arrowhead-top" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto"><polygon points="0 0, 4 2, 0 4" fill="#4f46e5" /></marker></defs>
+                    </svg>
+                    <div class="absolute bottom-0.5" style="left: 41.66%; width: 16.66%; height: 12px;">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full overflow-visible"><path d="M 0 100 Q 50 0 92 100" fill="none" stroke="#4f46e5" stroke-width="2" vector-effect="non-scaling-stroke" marker-end="url(#arrowhead-top)"/></svg>
+                        <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 text-[9px] font-black text-indigo-600 bg-white px-0.5">×2</span>
+                    </div>
+                    <div class="absolute bottom-1" style="left: 41.66%; width: 33.33%; height: 18px;">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full overflow-visible"><path d="M 0 100 Q 50 0 95 100" fill="none" stroke="#4f46e5" stroke-width="2" vector-effect="non-scaling-stroke" marker-end="url(#arrowhead-top)"/></svg>
+                        <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 text-[9px] font-black text-indigo-600 bg-white px-0.5">×3</span>
+                    </div>
+                    <div class="absolute bottom-1.5" style="left: 41.66%; width: 50%; height: 24px;">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full overflow-visible"><path d="M 0 100 Q 50 0 96 100" fill="none" stroke="#4f46e5" stroke-width="2" vector-effect="non-scaling-stroke" marker-end="url(#arrowhead-top)"/></svg>
+                        <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 text-[9px] font-black text-indigo-600 bg-white px-0.5">×4</span>
+                    </div>
+                </div>
+
+                <!-- 데이터 표 -->
+                <table class="w-full text-center table-fixed border-collapse rounded-lg shadow-sm border border-slate-300">
+                    <thead>
+                        <tr class="bg-indigo-50 border-b border-slate-300">
+                            <th class="py-1 font-bold text-indigo-900 border-r border-slate-300 w-1/6 text-xs md:text-sm">$x$</th>
+                            <td class="py-1 font-bold text-slate-700 border-r border-slate-300 w-1/6 text-xs md:text-sm">0</td>
+                            <td class="py-1 font-bold text-slate-700 border-r border-slate-300 w-1/6 text-xs md:text-sm">1</td>
+                            <td class="py-1 font-bold text-slate-700 border-r border-slate-300 w-1/6 text-xs md:text-sm">2</td>
+                            <td class="py-1 font-bold text-slate-700 border-r border-slate-300 w-1/6 text-xs md:text-sm">3</td>
+                            <td class="py-1 font-bold text-slate-700 w-1/6 text-xs md:text-sm">4</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white">
+                            <th class="py-1 md:py-1.5 font-bold text-orange-900 border-r border-slate-300 text-xs md:text-sm">$y$</th>
+                            <td id="table-y-0" class="py-1 md:py-1.5 font-extrabold text-orange-600 border-r border-slate-300 text-[13px] md:text-[14px] transition-colors duration-300"></td>
+                            <td id="table-y-1" class="py-1 md:py-1.5 font-extrabold text-orange-600 border-r border-slate-300 text-[13px] md:text-[14px] transition-colors duration-300"></td>
+                            <td id="table-y-2" class="py-1 md:py-1.5 font-extrabold text-orange-600 border-r border-slate-300 text-[13px] md:text-[14px] transition-colors duration-300"></td>
+                            <td id="table-y-3" class="py-1 md:py-1.5 font-extrabold text-orange-600 border-r border-slate-300 text-[13px] md:text-[14px] transition-colors duration-300"></td>
+                            <td id="table-y-4" class="py-1 md:py-1.5 font-extrabold text-orange-600 text-[13px] md:text-[14px] transition-colors duration-300"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 하단 화살표 -->
+                <div class="absolute bottom-0 left-0 w-full h-8 pointer-events-none">
+                    <svg class="hidden">
+                        <defs><marker id="arrowhead-bot" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto"><polygon points="0 0, 4 2, 0 4" fill="#ea580c" /></marker></defs>
+                    </svg>
+                    <div class="absolute top-0.5" style="left: 41.66%; width: 16.66%; height: 12px;">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full overflow-visible"><path d="M 0 0 Q 50 100 92 0" fill="none" stroke="#ea580c" stroke-width="2" vector-effect="non-scaling-stroke" marker-end="url(#arrowhead-bot)"/></svg>
+                        <span class="absolute -bottom-3.5 left-1/2 -translate-x-1/2 text-[9px] font-black text-orange-600 bg-white px-0.5">×2</span>
+                    </div>
+                    <div class="absolute top-1" style="left: 41.66%; width: 33.33%; height: 18px;">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full overflow-visible"><path d="M 0 0 Q 50 100 95 0" fill="none" stroke="#ea580c" stroke-width="2" vector-effect="non-scaling-stroke" marker-end="url(#arrowhead-bot)"/></svg>
+                        <span class="absolute -bottom-3.5 left-1/2 -translate-x-1/2 text-[9px] font-black text-orange-600 bg-white px-0.5">×3</span>
+                    </div>
+                    <div class="absolute top-1.5" style="left: 41.66%; width: 50%; height: 24px;">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full overflow-visible"><path d="M 0 0 Q 50 100 96 0" fill="none" stroke="#ea580c" stroke-width="2" vector-effect="non-scaling-stroke" marker-end="url(#arrowhead-bot)"/></svg>
+                        <span class="absolute -bottom-3.5 left-1/2 -translate-x-1/2 text-[9px] font-black text-orange-600 bg-white px-0.5">×4</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feedback-box" class="p-2 rounded-xl text-center font-bold text-[12px] md:text-[13px] min-h-[40px] flex items-center justify-center transition-all duration-300 bg-slate-100 text-slate-600 mt-auto flex-shrink-0">
+                우측 좌표평면에 알맞은 정비례 점 5개를 찍어주세요.
+            </div>
+            
+            <div class="grid grid-cols-4 gap-1.5 flex-shrink-0">
+                <button id="btn-draw-line" disabled class="col-span-3 bg-slate-200 text-slate-400 font-extrabold py-2 rounded-xl transition cursor-not-allowed flex justify-center items-center gap-2 text-[12px] md:text-[13px]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    직선 연결하기
+                </button>
+                <button id="btn-reset" title="다시 시작" class="col-span-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-xl transition active:scale-[0.98] flex justify-center items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                        <path d="M3 3v5h5"></path>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- 우측 패널: 대형 좌표평면 -->
+        <section class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex flex-col flex-grow relative z-10 overflow-hidden h-full">
+            <div class="flex justify-end items-center mb-1.5 px-2 flex-shrink-0">
+                <span id="mission-progress-badge" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg">
+                    $y = ax$ 그래프 탐구 1/5
+                </span>
+            </div>
+            <div class="relative w-full h-full flex-grow flex items-center justify-center bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                <canvas id="graph-canvas" class="block cursor-crosshair w-full h-full absolute inset-0"></canvas>
+                
+                <div id="success-overlay" class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 transition-all duration-300 opacity-0 pointer-events-none z-20">
+                    <div class="bg-white rounded-2xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-slate-100 transform scale-90 transition-all duration-300" id="success-modal">
+                        <div class="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-black text-slate-800 mb-2">완벽합니다!</h3>
+                        <p class="text-slate-600 text-sm mb-2 leading-relaxed">
+                            정비례 관계표의 점들을 연결하니 원점을 지나는 <strong class="text-indigo-600">직선</strong>이 그려졌습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- [뷰 2] 요약 정리 및 인터랙티브 체험 영역 (초기 숨김) -->
+    <main id="view-summary" class="hidden flex-grow w-full max-w-[1400px] mx-auto p-4 md:p-6 flex flex-col overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-6 md:p-8 flex flex-col h-full">
+            
+            <div class="text-center mb-6">
+                <h2 class="text-2xl md:text-3xl font-black text-indigo-700 mb-2">정비례 그래프 ($y=ax$) 특징 요약</h2>
+            </div>
+
+            <!-- 핵심 개념 정리 텍스트 영역 -->
+            <div class="bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 items-center justify-center">
+                <div class="flex items-center gap-3">
+                    <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-sm text-lg">1</span>
+                    <p class="text-slate-900 font-extrabold text-xl md:text-2xl">항상 원점 $(0,0)$을 지나는 <span class="text-indigo-600">직선</span>이다.</p>
+                </div>
+            </div>
+
+            <!-- 인터랙티브 그래프 영역 (태블릿 맞춤 분할) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
+                
+                <!-- 왼쪽 패널: a > 0 -->
+                <div class="bg-white border-2 border-rose-100 rounded-2xl p-4 md:p-5 flex flex-col items-center">
+                    <h3 class="text-2xl md:text-3xl font-black text-rose-700 mb-4 md:mb-5">$a > 0$ 인 경우 (양수)</h3>
+                    
+                    <div class="flex items-start justify-center gap-3 mb-3 md:mb-4 w-full px-2 min-h-[3rem]">
+                        <span class="bg-rose-600 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold flex-shrink-0 mt-0.5 text-base shadow-sm">2</span>
+                        <p class="text-slate-900 font-extrabold text-lg md:text-xl text-left leading-tight w-full">제1, 3사분면을 지나며<br>오른쪽 위로 향합니다.</p>
+                    </div>
+                    
+                    <!-- 인터랙티브 수식 표시 -->
+                    <div id="equation-pos" class="text-4xl md:text-5xl font-black text-rose-600 mb-6 h-12 flex items-center justify-center">$y = 1x$</div>
+                    
+                    <!-- 커스텀 스냅 슬라이더 (0~8 인덱스) -->
+                    <div class="w-full max-w-xs mb-6 text-center">
+                        <input type="range" id="slider-pos" min="0" max="8" step="1" value="4">
+                        <p class="text-xs text-slate-500 font-bold mt-3">(슬라이더를 움직여 $a$를 변경해보세요)</p>
+                    </div>
+
+                    <div class="relative w-full max-w-[260px] aspect-square bg-slate-50 rounded-xl border border-slate-200 overflow-hidden flex-shrink-0">
+                        <canvas id="mini-canvas-pos" class="absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                    
+                    <div class="mt-4 flex items-start gap-3 bg-rose-50 px-4 py-4 rounded-xl w-full border border-rose-100">
+                        <span class="bg-rose-600 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold flex-shrink-0 mt-0.5 text-base shadow-sm">3</span>
+                        <p class="text-slate-900 font-extrabold text-base md:text-lg text-left leading-snug">
+                            $|a|$가 작을수록 $x$축에 가깝고,<br>$|a|$가 클수록 $y$축에 가깝다.
+                            <span id="current-abs-pos" class="text-rose-700 font-black text-sm md:text-base mt-1.5 block">($|a| = 1$)</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 오른쪽 패널: a < 0 -->
+                <div class="bg-white border-2 border-blue-100 rounded-2xl p-4 md:p-5 flex flex-col items-center">
+                    <h3 class="text-2xl md:text-3xl font-black text-blue-700 mb-4 md:mb-5">$a < 0$ 인 경우 (음수)</h3>
+                    
+                    <div class="flex items-start justify-center gap-3 mb-3 md:mb-4 w-full px-2 min-h-[3rem]">
+                        <span class="bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold flex-shrink-0 mt-0.5 text-base shadow-sm">2</span>
+                        <p class="text-slate-900 font-extrabold text-lg md:text-xl text-left leading-tight w-full">제2, 4사분면을 지나며<br>오른쪽 아래로 향합니다.</p>
+                    </div>
+                    
+                    <!-- 인터랙티브 수식 표시 -->
+                    <div id="equation-neg" class="text-4xl md:text-5xl font-black text-blue-600 mb-6 h-12 flex items-center justify-center">$y = -1x$</div>
+                    
+                    <!-- 커스텀 스냅 슬라이더 (0~8 인덱스) -->
+                    <div class="w-full max-w-xs mb-6 text-center">
+                        <input type="range" id="slider-neg" min="0" max="8" step="1" value="4">
+                        <p class="text-xs text-slate-500 font-bold mt-3">(슬라이더를 움직여 $a$를 변경해보세요)</p>
+                    </div>
+
+                    <div class="relative w-full max-w-[260px] aspect-square bg-slate-50 rounded-xl border border-slate-200 overflow-hidden flex-shrink-0">
+                        <canvas id="mini-canvas-neg" class="absolute inset-0 w-full h-full"></canvas>
+                    </div>
+
+                    <div class="mt-4 flex items-start gap-3 bg-blue-50 px-4 py-4 rounded-xl w-full border border-blue-100">
+                        <span class="bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold flex-shrink-0 mt-0.5 text-base shadow-sm">3</span>
+                        <p class="text-slate-900 font-extrabold text-base md:text-lg text-left leading-snug">
+                            $|a|$가 작을수록 $x$축에 가깝고,<br>$|a|$가 클수록 $y$축에 가깝다.
+                            <span id="current-abs-neg" class="text-blue-700 font-black text-sm md:text-base mt-1.5 block">($|a| = 1$)</span>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 하단 버튼 -->
+            <div class="mt-6 flex justify-center">
+                <button id="btn-restart-all" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3.5 px-8 rounded-xl transition transform active:scale-95 shadow-lg shadow-indigo-600/30 text-base md:text-lg">
+                    처음부터 다시 탐구하기
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 자바스크립트 로직 -->
+    <script>
+        // --- 1. 전역 상태 및 데이터 ---
+        const MISSIONS = [
+            { id: 1, label: 'y = x', a: 1, tex: 'y = x', color: '#3b82f6', yVals: { '0': 0, '1': 1, '2': 2, '3': 3, '4': 4 } },
+            { id: 2, label: 'y = 2x', a: 2, tex: 'y = 2x', color: '#ef4444', yVals: { '0': 0, '1': 2, '2': 4, '3': 6, '4': 8 } },
+            { id: 3, label: 'y = 1/2x', a: 0.5, tex: 'y = \\frac{1}{2}x', color: '#8b5cf6', yVals: { '0': 0, '1': 0.5, '2': 1, '3': 1.5, '4': 2 } },
+            { id: 4, label: 'y = -x', a: -1, tex: 'y = -x', color: '#10b981', yVals: { '0': 0, '1': -1, '2': -2, '3': -3, '4': -4 } },
+            { id: 5, label: 'y = -2x', a: -2, tex: 'y = -2x', color: '#f97316', yVals: { '0': 0, '1': -2, '2': -4, '3': -6, '4': -8 } }
+        ];
+
+        const TARGET_X_VALUES = [0, 1, 2, 3, 4];
+
+        let savedStates = {};
+        let currentMissionIdx = 0;
+        let plottedPoints = [];
+        let isLineDrawn = false;
+        let appMode = 'PLOT';
+        let drawnSegments = new Set();
+        let dragStartPt = null;
+        let dragCurrentPixel = null;
+
+        // --- DOM 매핑 ---
+        const viewExploration = document.getElementById('view-exploration');
+        const viewSummary = document.getElementById('view-summary');
+
+        const canvas = document.getElementById('graph-canvas');
+        const ctx = canvas.getContext('2d');
+        const equationDisplay = document.getElementById('equation-display');
+        const scoreBadge = document.getElementById('score-badge');
+        const feedbackBox = document.getElementById('feedback-box');
+        const btnDrawLine = document.getElementById('btn-draw-line');
+        const btnReset = document.getElementById('btn-reset');
+        const successOverlay = document.getElementById('success-overlay');
+        const successModal = document.getElementById('success-modal');
+        const progressBadge = document.getElementById('mission-progress-badge');
+
+        const tableCells = {
+            '0': document.getElementById('table-y-0'),
+            '1': document.getElementById('table-y-1'),
+            '2': document.getElementById('table-y-2'),
+            '3': document.getElementById('table-y-3'),
+            '4': document.getElementById('table-y-4')
+        };
+
+        let gridLimitX = 5; 
+        let gridLimitY = 8;
+        let unitSize = 30;  
+        let centerX = 0;
+        let centerY = 0;
+
+        // --- 상태 관리 ---
+        function saveCurrentState() {
+            savedStates[currentMissionIdx] = {
+                plottedPoints: [...plottedPoints],
+                isLineDrawn: isLineDrawn,
+                appMode: appMode,
+                drawnSegments: new Set(drawnSegments)
+            };
+        }
+
+        // --- 캔버스 렌더링 (메인 탐구 영역) ---
+        function resizeCanvas() {
+            if(viewExploration.classList.contains('hidden')) return;
+
+            const container = canvas.parentElement;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            ctx.scale(dpr, dpr);
+
+            centerX = width / 2;
+            centerY = height / 2;
+            
+            const minDimensionX = width / (gridLimitX * 2 + 2);
+            const minDimensionY = height / (gridLimitY * 2 + 2);
+            unitSize = Math.min(minDimensionX, minDimensionY);
+
+            drawAll();
+        }
+
+        function toPixelX(mathX) { return centerX + mathX * unitSize; }
+        function toPixelY(mathY) { return centerY - mathY * unitSize; }
+        function toMathCoords(pixelX, pixelY) {
+            return {
+                x: (pixelX - centerX) / unitSize,
+                y: (centerY - pixelY) / unitSize
+            };
+        }
+
+        function drawAll() {
+            const w = canvas.width / (window.devicePixelRatio || 1);
+            const h = canvas.height / (window.devicePixelRatio || 1);
+            ctx.clearRect(0, 0, w, h);
+
+            drawGrid(w, h);
+            drawAxes(w, h);
+            
+            Object.keys(savedStates).forEach(key => {
+                const idx = parseInt(key);
+                if (idx === currentMissionIdx) return;
+                const state = savedStates[idx];
+                if (state && state.isLineDrawn) {
+                    const m = MISSIONS[idx];
+                    ctx.strokeStyle = m.color; 
+                    ctx.lineWidth = 3;
+                    ctx.lineCap = 'round';
+                    ctx.globalAlpha = 0.3; 
+                    
+                    const xLimit = Math.ceil(w / unitSize);
+                    ctx.beginPath(); 
+                    ctx.moveTo(toPixelX(-xLimit), toPixelY(m.a * -xLimit)); 
+                    ctx.lineTo(toPixelX(xLimit), toPixelY(m.a * xLimit)); 
+                    ctx.stroke();
+                    
+                    ctx.globalAlpha = 0.7;
+                    ctx.fillStyle = m.color;
+                    ctx.font = 'bold 15px sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'bottom';
+                    
+                    let labelX = 4.2;
+                    let labelY = m.a * labelX;
+                    if (labelY > 7.2) { labelY = 7.2; labelX = labelY / m.a; }
+                    if (labelY < -7.2) { labelY = -7.2; labelX = labelY / m.a; }
+                    ctx.fillText(m.label, toPixelX(labelX) + 8, toPixelY(labelY) - 8);
+
+                    ctx.globalAlpha = 1.0;
+                }
+            });
+
+            drawGuideHighlights();
+            drawPlottedPoints();
+            
+            const currentMission = MISSIONS[currentMissionIdx];
+            ctx.strokeStyle = currentMission.color;
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            drawnSegments.forEach(seg => {
+                const [x1, x2] = seg.split('-').map(Number);
+                const p1 = plottedPoints.find(p => p.x === x1);
+                const p2 = plottedPoints.find(p => p.x === x2);
+                if(p1 && p2) {
+                    ctx.beginPath();
+                    ctx.moveTo(toPixelX(p1.x), toPixelY(p1.y));
+                    ctx.lineTo(toPixelX(p2.x), toPixelY(p2.y));
+                    ctx.stroke();
+                }
+            });
+
+            if (appMode === 'DRAW_MODE' && dragStartPt && dragCurrentPixel) {
+                ctx.beginPath();
+                ctx.moveTo(toPixelX(dragStartPt.x), toPixelY(dragStartPt.y));
+                ctx.lineTo(dragCurrentPixel.px, dragCurrentPixel.py);
+                ctx.stroke();
+            }
+
+            if (isLineDrawn) {
+                drawContinuousLine();
+                
+                const m = MISSIONS[currentMissionIdx];
+                ctx.fillStyle = m.color;
+                ctx.font = 'bold 18px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+                
+                let labelX = 4.2;
+                let labelY = m.a * labelX;
+                if (labelY > 7.2) { labelY = 7.2; labelX = labelY / m.a; }
+                if (labelY < -7.2) { labelY = -7.2; labelX = labelY / m.a; }
+                ctx.fillText(m.label, toPixelX(labelX) + 10, toPixelY(labelY) - 10);
+            }
+        }
+
+        function drawGrid(w, h) {
+            ctx.strokeStyle = '#F1F5F9';
+            ctx.lineWidth = 1.5;
+            
+            for (let i = -gridLimitX; i <= gridLimitX; i++) {
+                if (i === 0) continue;
+                ctx.beginPath(); ctx.moveTo(toPixelX(i), toPixelY(-gridLimitY)); ctx.lineTo(toPixelX(i), toPixelY(gridLimitY)); ctx.stroke();
+            }
+            for (let i = -gridLimitY; i <= gridLimitY; i++) {
+                if (i === 0) continue;
+                ctx.beginPath(); ctx.moveTo(toPixelX(-gridLimitX), toPixelY(i)); ctx.lineTo(toPixelX(gridLimitX), toPixelY(i)); ctx.stroke();
+            }
+        }
+
+        function drawAxes(w, h) {
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2.5;
+
+            ctx.beginPath(); ctx.moveTo(toPixelX(-gridLimitX - 0.5), centerY); ctx.lineTo(toPixelX(gridLimitX + 0.5), centerY); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(centerX, toPixelY(-gridLimitY - 0.5)); ctx.lineTo(centerX, toPixelY(gridLimitY + 0.5)); ctx.stroke();
+
+            ctx.fillStyle = '#475569';
+            ctx.font = 'bold 12px sans-serif';
+
+            ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+            for (let i = -gridLimitX; i <= gridLimitX; i++) {
+                if (i === 0) continue;
+                ctx.beginPath(); ctx.moveTo(toPixelX(i), centerY - 4); ctx.lineTo(toPixelX(i), centerY + 4); ctx.stroke();
+                ctx.fillText(i.toString(), toPixelX(i), centerY + 10);
+            }
+
+            ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+            for (let i = -gridLimitY; i <= gridLimitY; i++) {
+                if (i === 0) continue;
+                ctx.beginPath(); ctx.moveTo(centerX - 4, toPixelY(i)); ctx.lineTo(centerX + 4, toPixelY(i)); ctx.stroke();
+                ctx.fillText(i.toString(), centerX - 8, toPixelY(i));
+            }
+
+            ctx.fillStyle = '#1E293B'; ctx.fillText('O', centerX - 12, centerY + 14);
+            ctx.font = 'italic bold 15px sans-serif'; 
+            ctx.fillText('x', toPixelX(gridLimitX + 0.5) + 10, centerY - 5);
+            ctx.fillText('y', centerX + 15, toPixelY(gridLimitY + 0.5) - 10);
+        }
+
+        let hoveredGridCoord = null;
+
+        function drawGuideHighlights() {
+            if (!hoveredGridCoord) return;
+            const {x, y} = hoveredGridCoord;
+            const px = toPixelX(x);
+            const py = toPixelY(y);
+            
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.25)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+
+            ctx.beginPath(); ctx.moveTo(px, centerY); ctx.lineTo(px, py); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(centerX, py); ctx.lineTo(px, py); ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = 'rgba(99, 102, 241, 0.4)';
+            ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI * 2); ctx.fill();
+        }
+
+        function drawPlottedPoints() {
+            const mission = MISSIONS[currentMissionIdx];
+            plottedPoints.forEach(pt => {
+                const px = toPixelX(pt.x);
+                const py = toPixelY(pt.y);
+
+                ctx.fillStyle = 'rgba(30, 41, 59, 0.1)';
+                ctx.beginPath(); ctx.arc(px, py, 11, 0, Math.PI * 2); ctx.fill();
+
+                ctx.fillStyle = mission.color;
+                ctx.beginPath(); ctx.arc(px, py, 6.5, 0, Math.PI * 2); ctx.fill();
+
+                ctx.fillStyle = '#475569';
+                ctx.font = 'bold 12px monospace';
+                ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+                
+                let textY = pt.y;
+                if(pt.y === 0.5) textY = "1/2";
+                if(pt.y === 1.5) textY = "3/2";
+                if(pt.y === -0.5) textY = "-1/2";
+                if(pt.y === -1.5) textY = "-3/2";
+                
+                ctx.fillText(`(${pt.x}, ${textY})`, px + 10, py - 6);
+            });
+        }
+
+        function drawContinuousLine() {
+            const mission = MISSIONS[currentMissionIdx];
+            const a = mission.a;
+
+            ctx.strokeStyle = mission.color;
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            
+            const xLimit = Math.ceil(canvas.width / unitSize);
+            const x1 = -xLimit;
+            const y1 = a * x1;
+            const x2 = xLimit;
+            const y2 = a * x2;
+
+            ctx.beginPath(); ctx.moveTo(toPixelX(x1), toPixelY(y1)); ctx.lineTo(toPixelX(x2), toPixelY(y2)); ctx.stroke();
+        }
+
+        // --- 상호작용 로직 ---
+        function handlePointerMove(e) {
+            if(viewExploration.classList.contains('hidden')) return;
+            const rect = canvas.getBoundingClientRect();
+            const px = e.clientX - rect.left;
+            const py = e.clientY - rect.top;
+            const mathPos = toMathCoords(px, py);
+            
+            let snapX = Math.round(mathPos.x * 2) / 2;
+            let snapY = Math.round(mathPos.y * 2) / 2;
+
+            if (appMode === 'PLOT') {
+                hoveredGridCoord = {x: snapX, y: snapY};
+            } else {
+                hoveredGridCoord = null;
+            }
+
+            if (appMode === 'DRAW_MODE' && dragStartPt) {
+                dragCurrentPixel = { px, py };
+            }
+            drawAll();
+        }
+
+        function handlePointerLeave() {
+            hoveredGridCoord = null;
+            dragStartPt = null;
+            dragCurrentPixel = null;
+            drawAll();
+        }
+
+        function getHitPlottedPoint(mathPos) {
+            for (let pt of plottedPoints) {
+                if (Math.hypot(pt.x - mathPos.x, pt.y - mathPos.y) < 0.6) {
+                    return pt;
+                }
+            }
+            return null;
+        }
+
+        function handlePointerDown(e) {
+            if(viewExploration.classList.contains('hidden')) return;
+            const rect = canvas.getBoundingClientRect();
+            const mathPos = toMathCoords(e.clientX - rect.left, e.clientY - rect.top);
+            
+            if (appMode === 'DRAW_MODE') {
+                const hit = getHitPlottedPoint(mathPos);
+                if (hit) {
+                    dragStartPt = hit;
+                    dragCurrentPixel = { px: e.clientX - rect.left, py: e.clientY - rect.top };
+                }
+                return;
+            }
+
+            if (appMode !== 'PLOT') return;
+
+            const mission = MISSIONS[currentMissionIdx];
+            
+            let nearestX = null;
+            let minDistance = Infinity;
+
+            TARGET_X_VALUES.forEach(tx => {
+                const targetY = mission.yVals[tx.toString()];
+                const distance = Math.hypot(mathPos.x - tx, mathPos.y - targetY);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestX = tx;
+                }
+            });
+
+            if (nearestX !== null && minDistance < 0.6) {
+                const targetY = mission.yVals[nearestX.toString()];
+                
+                if (plottedPoints.some(pt => pt.x === nearestX)) {
+                    showFeedback('warning', '이미 찍은 자리예요!');
+                    return;
+                }
+
+                plottedPoints.push({x: nearestX, y: targetY});
+                showFeedback('success', `좋아요! $x=${nearestX}$ 일 때 $y=${targetY}$`);
+                
+                highlightTableCell(nearestX, true);
+                updatePlottedCount();
+            } else {
+                showFeedback('error', '아쉽네요! 표의 y값을 다시 계산해봐요.');
+            }
+            drawAll();
+        }
+
+        function handlePointerUp(e) {
+            if(viewExploration.classList.contains('hidden')) return;
+            if (appMode === 'DRAW_MODE' && dragStartPt) {
+                const rect = canvas.getBoundingClientRect();
+                const mathPos = toMathCoords(e.clientX - rect.left, e.clientY - rect.top);
+                const hit = getHitPlottedPoint(mathPos);
+                
+                if (hit && hit.x !== dragStartPt.x) {
+                    if (Math.abs(hit.x - dragStartPt.x) === 1) {
+                        const segmentId = Math.min(hit.x, dragStartPt.x) + '-' + Math.max(hit.x, dragStartPt.x);
+                        drawnSegments.add(segmentId);
+                        
+                        if (drawnSegments.size === 4) {
+                            appMode = 'DONE';
+                            isLineDrawn = true;
+                            saveCurrentState();
+                            
+                            const isAllCompleted = Object.values(savedStates).filter(state => state && state.isLineDrawn).length === MISSIONS.length;
+
+                            btnDrawLine.disabled = false;
+                            btnDrawLine.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                                ${isAllCompleted ? '그래프 특징 요약보기' : '다음 그래프 탐구하기'}
+                            `;
+                            btnDrawLine.className = 'col-span-3 bg-green-600 hover:bg-green-700 text-white font-extrabold py-2.5 rounded-xl transition shadow-md shadow-green-600/30 active:scale-[0.98] flex justify-center items-center gap-2 text-[13px] md:text-sm';
+                            
+                            showFeedback('success', '대단해요! 원점을 지나는 완벽한 직선이 완성되었어요!');
+                            setTimeout(() => {
+                                successOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                                successModal.classList.remove('scale-90');
+                                successModal.classList.add('scale-100');
+
+                                setTimeout(() => {
+                                    successOverlay.classList.add('opacity-0', 'pointer-events-none');
+                                    successModal.classList.remove('scale-100');
+                                    successModal.classList.add('scale-90');
+                                }, 2500);
+                            }, 500);
+                        } else {
+                            showFeedback('success', '잘 연결했어요! 나머지 점들도 순서대로 이어보세요.');
+                        }
+                    } else {
+                        showFeedback('warning', '바로 옆에 있는 점과 차례대로 연결해보세요!');
+                    }
+                }
+                dragStartPt = null;
+                dragCurrentPixel = null;
+                drawAll();
+            }
+        }
+
+        function showFeedback(type, text) {
+            feedbackBox.className = "p-2 rounded-xl text-center font-bold text-[12px] md:text-[13px] min-h-[40px] flex items-center justify-center transition-all duration-300 mt-auto flex-shrink-0";
+            
+            if (type === 'success') feedbackBox.classList.add('bg-green-100', 'text-green-800', 'border', 'border-green-300');
+            else if (type === 'error') feedbackBox.classList.add('bg-rose-100', 'text-rose-800', 'border', 'border-rose-300');
+            else if (type === 'warning') feedbackBox.classList.add('bg-yellow-100', 'text-yellow-800', 'border', 'border-yellow-300');
+            else feedbackBox.classList.add('bg-slate-100', 'text-slate-600');
+
+            feedbackBox.innerHTML = text;
+            renderMathInElement(feedbackBox, { delimiters: [{left: "$", right: "$", display: false}], throwOnError: false });
+        }
+
+        function highlightTableCell(xVal, isCorrect) {
+            const cell = tableCells[xVal.toString()];
+            if (cell) {
+                if (isCorrect) {
+                    cell.classList.add('bg-indigo-500', 'text-white');
+                    cell.classList.remove('text-orange-600', 'bg-white');
+                } else {
+                    let baseClass = 'py-1 md:py-1.5 font-extrabold text-orange-600 border-slate-300 text-[13px] md:text-[14px] bg-white transition-colors duration-300 ';
+                    cell.className = xVal === 4 ? baseClass : baseClass + 'border-r';
+                }
+            }
+        }
+
+        function updatePlottedCount() {
+            const count = plottedPoints.length;
+            scoreBadge.textContent = `맞춘 점: ${count} / 5`;
+            
+            if (appMode !== 'PLOT') return;
+
+            if (count === 5) {
+                showFeedback('success', '대단해요! 이제 [직선 연결하기] 버튼을 누르고 펜으로 점들을 이어보세요!');
+                btnDrawLine.disabled = false;
+                btnDrawLine.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    직선 연결하기
+                `;
+                btnDrawLine.className = 'col-span-3 bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-2 rounded-xl transition shadow-md shadow-orange-500/30 active:scale-[0.98] flex justify-center items-center gap-2 text-[12px] md:text-[13px]';
+            } else {
+                btnDrawLine.disabled = true;
+                btnDrawLine.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    직선 연결하기
+                `;
+                btnDrawLine.className = 'col-span-3 bg-slate-200 text-slate-400 font-extrabold py-2 rounded-xl transition cursor-not-allowed flex justify-center items-center gap-2 text-[12px] md:text-[13px]';
+            }
+        }
+
+        function initMission(idx, isReset = false) {
+            if (currentMissionIdx !== undefined && currentMissionIdx !== idx && !isReset) {
+                saveCurrentState();
+            }
+            if (isReset) {
+                savedStates[idx] = null;
+            }
+
+            currentMissionIdx = idx;
+
+            if (savedStates[idx]) {
+                const state = savedStates[idx];
+                plottedPoints = [...state.plottedPoints];
+                isLineDrawn = state.isLineDrawn;
+                appMode = state.appMode;
+                drawnSegments = new Set(state.drawnSegments);
+            } else {
+                plottedPoints = [];
+                isLineDrawn = false;
+                appMode = 'PLOT';
+                drawnSegments.clear();
+            }
+
+            hoveredGridCoord = null;
+            dragStartPt = null;
+            dragCurrentPixel = null;
+            successOverlay.classList.add('opacity-0', 'pointer-events-none');
+
+            const mission = MISSIONS[idx];
+            equationDisplay.innerHTML = `$$${mission.tex}$$`;
+            renderMathInElement(equationDisplay, { delimiters: [{left: "$$", right: "$$", display: true}], throwOnError: false });
+
+            TARGET_X_VALUES.forEach(tx => {
+                const cell = tableCells[tx.toString()];
+                const yVal = mission.yVals[tx.toString()];
+                
+                let yDisplayStr = yVal.toString();
+                if (yVal === 0.5) yDisplayStr = '1/2';
+                else if (yVal === 1.5) yDisplayStr = '3/2';
+                else if (yVal === -0.5) yDisplayStr = '-1/2';
+
+                cell.textContent = yDisplayStr;
+                highlightTableCell(tx, plottedPoints.some(pt => pt.x === tx));
+            });
+
+            progressBadge.innerHTML = `$y = ax$ 그래프 탐구 ${idx + 1}/${MISSIONS.length}`;
+            renderMathInElement(progressBadge, { delimiters: [{left: "$", right: "$", display: false}], throwOnError: false });
+            scoreBadge.textContent = `맞춘 점: ${plottedPoints.length} / 5`;
+
+            if (appMode === 'PLOT') {
+                updatePlottedCount();
+                if(plottedPoints.length < 5) showFeedback('normal', `우측 좌표평면에 알맞은 정비례 점 5개를 찍어주세요.`);
+            } else if (appMode === 'DRAW_MODE') {
+                btnDrawLine.disabled = true;
+                btnDrawLine.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    펜 활성화됨 (드래그)
+                `;
+                btnDrawLine.className = 'col-span-3 bg-indigo-600 text-white font-extrabold py-2 rounded-xl transition shadow-md shadow-indigo-600/30 active:scale-[0.98] flex justify-center items-center gap-2 text-[12px] md:text-[13px]';
+                showFeedback('normal', '점들을 순서대로 드래그해서 선분으로 하나씩 이어보세요!');
+            } else if (appMode === 'DONE') {
+                const isAllCompleted = Object.values(savedStates).filter(state => state && state.isLineDrawn).length === MISSIONS.length;
+
+                btnDrawLine.disabled = false;
+                btnDrawLine.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                    ${isAllCompleted ? '그래프 특징 요약보기' : '다음 그래프 탐구하기'}
+                `;
+                btnDrawLine.className = 'col-span-3 bg-green-600 hover:bg-green-700 text-white font-extrabold py-2 rounded-xl transition shadow-md shadow-green-600/30 active:scale-[0.98] flex justify-center items-center gap-2 text-[12px] md:text-[13px]';
+                showFeedback('success', '대단해요! 원점을 지나는 완벽한 직선이 완성되었어요!');
+            }
+            drawAll();
+        }
+
+        // --- 메인 이벤트 리스너 ---
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            renderMiniGraphs();
+        });
+        canvas.addEventListener('pointermove', handlePointerMove);
+        canvas.addEventListener('pointerleave', handlePointerLeave);
+        canvas.addEventListener('pointerdown', handlePointerDown);
+        canvas.addEventListener('pointerup', handlePointerUp);
+
+        btnDrawLine.addEventListener('click', () => {
+            if (appMode === 'PLOT') {
+                appMode = 'DRAW_MODE';
+                saveCurrentState();
+                btnDrawLine.disabled = true;
+                btnDrawLine.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    펜 활성화됨 (드래그)
+                `;
+                btnDrawLine.classList.replace('bg-orange-500', 'bg-indigo-600');
+                btnDrawLine.classList.replace('shadow-orange-500/30', 'shadow-indigo-600/30');
+
+                drawAll();
+                showFeedback('normal', '점들을 순서대로 드래그해서 선분으로 하나씩 이어보세요!');
+            } else if (appMode === 'DONE') {
+                const isAllCompleted = Object.values(savedStates).filter(state => state && state.isLineDrawn).length === MISSIONS.length;
+                if (isAllCompleted) {
+                    showSummaryPage();
+                } else {
+                    initMission((currentMissionIdx + 1) % MISSIONS.length);
+                }
+            }
+        });
+        
+        btnReset.addEventListener('click', () => initMission(currentMissionIdx, true));
+
+
+        // --- 2. 요약 페이지 (미니 그래프) 로직 ---
+        const sliderPos = document.getElementById('slider-pos');
+        const sliderNeg = document.getElementById('slider-neg');
+        const eqPos = document.getElementById('equation-pos');
+        const eqNeg = document.getElementById('equation-neg');
+        
+        const posVals = [1/5, 1/4, 1/3, 1/2, 1, 2, 3, 4, 5];
+        const posStrs = ["\\frac{1}{5}", "\\frac{1}{4}", "\\frac{1}{3}", "\\frac{1}{2}", "1", "2", "3", "4", "5"];
+        const posAbsStrs = ["\\frac{1}{5}", "\\frac{1}{4}", "\\frac{1}{3}", "\\frac{1}{2}", "1", "2", "3", "4", "5"];
+
+        // 음수 배열 순서 반전 (왼쪽이 -1/5, 오른쪽이 -5)
+        const negVals = [-1/5, -1/4, -1/3, -1/2, -1, -2, -3, -4, -5];
+        const negStrs = ["-\\frac{1}{5}", "-\\frac{1}{4}", "-\\frac{1}{3}", "-\\frac{1}{2}", "-1", "-2", "-3", "-4", "-5"];
+        const negAbsStrs = ["\\frac{1}{5}", "\\frac{1}{4}", "\\frac{1}{3}", "\\frac{1}{2}", "1", "2", "3", "4", "5"];
+
+        function showSummaryPage() {
+            viewExploration.classList.add('hidden');
+            viewSummary.classList.remove('hidden');
+            sliderPos.value = 4;
+            sliderNeg.value = 4;
+            updateMiniGraphs();
+            
+            renderMathInElement(viewSummary, { delimiters: [{left: "$", right: "$", display: false}, {left: "$$", right: "$$", display: true}], throwOnError: false });
+        }
+
+        document.getElementById('btn-restart-all').addEventListener('click', () => {
+            viewSummary.classList.add('hidden');
+            viewExploration.classList.remove('hidden');
+            savedStates = {};
+            initMission(0, true);
+        });
+
+        function updateMiniGraphs() {
+            const pIdx = parseInt(sliderPos.value);
+            const nIdx = parseInt(sliderNeg.value);
+
+            const aPos = posVals[pIdx];
+            const aNeg = negVals[nIdx];
+
+            eqPos.innerHTML = `$$y = ${posStrs[pIdx]}x$$`;
+            eqNeg.innerHTML = `$$y = ${negStrs[nIdx]}x$$`;
+            renderMathInElement(eqPos, { delimiters: [{left: "$$", right: "$$", display: true}], throwOnError: false });
+            renderMathInElement(eqNeg, { delimiters: [{left: "$$", right: "$$", display: true}], throwOnError: false });
+
+            document.getElementById('current-abs-pos').innerHTML = `(현재 $|a| = ${posAbsStrs[pIdx]}$)`;
+            document.getElementById('current-abs-neg').innerHTML = `(현재 $|a| = ${negAbsStrs[nIdx]}$)`;
+            renderMathInElement(document.getElementById('current-abs-pos'), { delimiters: [{left: "$", right: "$", display: false}], throwOnError: false });
+            renderMathInElement(document.getElementById('current-abs-neg'), { delimiters: [{left: "$", right: "$", display: false}], throwOnError: false });
+
+            renderMiniGraph('mini-canvas-pos', aPos, '#e11d48'); 
+            renderMiniGraph('mini-canvas-neg', aNeg, '#2563eb'); 
+        }
+
+        function renderMiniGraph(canvasId, aValue, lineColor) {
+            const mcv = document.getElementById(canvasId);
+            const container = mcv.parentElement;
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            
+            const dpr = window.devicePixelRatio || 1;
+            mcv.width = w * dpr;
+            mcv.height = h * dpr;
+            const mctx = mcv.getContext('2d');
+            mctx.scale(dpr, dpr);
+
+            mctx.clearRect(0, 0, w, h);
+            const cx = w / 2;
+            const cy = h / 2;
+            const unit = w / 10; 
+
+            mctx.font = 'bold 20px sans-serif';
+            mctx.fillStyle = 'rgba(148, 163, 184, 0.15)'; 
+            mctx.textAlign = 'center';
+            mctx.textBaseline = 'middle';
+            if (aValue > 0) {
+                mctx.fillText('제1사분면', cx + w/4, cy - h/4);
+                mctx.fillText('제3사분면', cx - w/4, cy + h/4);
+            } else {
+                mctx.fillText('제2사분면', cx - w/4, cy - h/4);
+                mctx.fillText('제4사분면', cx + w/4, cy + h/4);
+            }
+
+            mctx.strokeStyle = '#f1f5f9';
+            mctx.lineWidth = 1;
+            for(let i=-5; i<=5; i++) {
+                mctx.beginPath(); mctx.moveTo(cx + i*unit, 0); mctx.lineTo(cx + i*unit, h); mctx.stroke();
+                mctx.beginPath(); mctx.moveTo(0, cy + i*unit); mctx.lineTo(w, cy + i*unit); mctx.stroke();
+            }
+
+            mctx.strokeStyle = '#94a3b8';
+            mctx.lineWidth = 2;
+            mctx.beginPath(); mctx.moveTo(0, cy); mctx.lineTo(w, cy); mctx.stroke(); 
+            mctx.beginPath(); mctx.moveTo(cx, 0); mctx.lineTo(cx, h); mctx.stroke(); 
+
+            mctx.fillStyle = '#64748b';
+            mctx.font = 'bold 12px sans-serif';
+            mctx.fillText('O', cx - 10, cy + 12);
+            mctx.fillText('x', w - 10, cy - 10);
+            mctx.fillText('y', cx + 10, 10);
+
+            mctx.strokeStyle = lineColor;
+            mctx.lineWidth = 4;
+            mctx.lineCap = 'round';
+            mctx.beginPath();
+            const x1 = -5; const y1 = aValue * x1;
+            const x2 = 5;  const y2 = aValue * x2;
+            mctx.moveTo(cx + x1 * unit, cy - y1 * unit);
+            mctx.lineTo(cx + x2 * unit, cy - y2 * unit);
+            mctx.stroke();
+        }
+
+        sliderPos.addEventListener('input', updateMiniGraphs);
+        sliderNeg.addEventListener('input', updateMiniGraphs);
+
+        function renderMiniGraphs() {
+            if(!viewSummary.classList.contains('hidden')) {
+                updateMiniGraphs();
+            }
+        }
+
+        // --- 초기화 ---
+        window.onload = () => {
+            renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false });
+            resizeCanvas();
+            initMission(0);
+        };
+    </script>
+</body>
+</html>
