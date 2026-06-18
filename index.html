@@ -4,94 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>정비례 완벽 이해하기</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
-        .phase-section { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
-        .phase-active { display: flex !important; opacity: 1; }
-        .arrow-path { stroke-dasharray: 8; animation: dash 1s linear infinite; }
+        
+        .phase-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .phase-active {
+            display: flex !important;
+            opacity: 1;
+        }
+        
+        .arrow-path {
+            stroke-dasharray: 8;
+            animation: dash 1s linear infinite;
+        }
         @keyframes dash { to { stroke-dashoffset: -16; } }
-        .bounce-in { animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes bounceIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .bounce-in {
+            animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col text-slate-800 p-4 md:p-6">
 
-    <header class="max-w-[1400px] mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-4 mb-4 border-b-2 border-slate-200 pb-4">
-        <h1 class="text-2xl md:text-3xl font-black text-indigo-900 tracking-tight flex items-center gap-2">🚀 정비례 마스터하기</h1>
+    <!-- 글로벌 헤더 -->
+    <header class="max-w-5xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-4 mb-4 border-b-2 border-slate-200 pb-4">
+        <div class="text-left flex-shrink-0">
+            <h1 class="text-2xl md:text-3xl font-black text-indigo-900 tracking-tight flex items-center gap-2">
+                🚀 정비례 마스터하기
+            </h1>
+        </div>
+        
+        <!-- 단계 표시기 -->
         <div class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-2xl shadow-sm border border-slate-100 w-full md:w-auto justify-center">
-            <div id="nav-phase-1" class="px-4 py-2 rounded-xl font-bold text-base md:text-lg transition-all border-2">1. 정비례 뜻</div>
-            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-            <div id="nav-phase-2" class="px-4 py-2 rounded-xl font-bold text-base md:text-lg transition-all border-2">2. 정비례 판단</div>
-            <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-            <div id="nav-phase-3" class="px-4 py-2 rounded-xl font-bold text-base md:text-lg transition-all border-2">3. 문제 풀어보기</div>
+            <div id="nav-phase-1" class="px-3 py-1.5 rounded-xl font-bold text-base transition-all border-2">1. 정비례 뜻</div>
+            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+            <div id="nav-phase-2" class="px-3 py-1.5 rounded-xl font-bold text-base transition-all border-2">2. 판단 연습</div>
+            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+            <div id="nav-phase-3" class="px-3 py-1.5 rounded-xl font-bold text-base transition-all border-2">3. 문제 풀기</div>
         </div>
     </header>
 
-    <main class="max-w-[1400px] mx-auto w-full flex-grow relative flex flex-col">
+    <main class="max-w-5xl mx-auto w-full flex-grow relative flex flex-col">
         
-        <!-- [1단계] 정비례 뜻 -->
-        <section id="phase-1" class="phase-section flex-grow grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch w-full">
-            <div class="md:col-span-7 bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 flex flex-col justify-center relative overflow-hidden">
-                <div class="relative py-[5.5rem] px-2" id="p1-table-wrapper">
+        <!-- ==========================================
+             [1단계] 정비례 뜻
+             ========================================== -->
+        <section id="phase-1" class="phase-section flex-col gap-6 items-center w-full">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 w-full relative">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-black text-indigo-700 mb-4">정비례란 무엇일까요?</h2>
+                    <div class="bg-indigo-50 border-2 border-indigo-100 rounded-2xl p-5 text-lg md:text-xl font-bold text-slate-800 leading-relaxed shadow-inner inline-block text-left max-w-3xl w-full">
+                        $x$의 값이 <strong class="text-indigo-600 text-2xl">2배, 3배...</strong>로 변함에 따라<br>
+                        $y$의 값도 똑같이 <strong class="text-orange-600 text-2xl">2배, 3배...</strong>로 변하는 관계를<br>
+                        우리는 <span class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg">정비례</span>라고 부릅니다.
+                    </div>
+                </div>
+
+                <div class="relative py-20 px-2 w-full" id="p1-table-wrapper">
                     <svg id="p1-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"></svg>
                     <div class="overflow-x-auto z-10 relative">
                         <table class="w-full text-center border-separate border-spacing-0 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
                             <thead>
                                 <tr class="bg-slate-50">
-                                    <th class="p-4 md:p-6 border-b border-r-2 border-slate-200 text-xl md:text-2xl font-black text-slate-700 w-1/5">$x$</th>
-                                    <td id="p1-cell-x-1" class="p-4 md:p-6 border-b border-r border-slate-200 text-2xl md:text-3xl font-black text-slate-800 w-1/5">1</td>
-                                    <td id="p1-cell-x-2" class="p-4 md:p-6 border-b border-r border-slate-200 text-2xl md:text-3xl font-black text-slate-800 w-1/5">2</td>
-                                    <td id="p1-cell-x-3" class="p-4 md:p-6 border-b border-r border-slate-200 text-2xl md:text-3xl font-black text-slate-800 w-1/5">3</td>
-                                    <td id="p1-cell-x-4" class="p-4 md:p-6 border-b border-slate-200 text-2xl md:text-3xl font-black text-slate-800 w-1/5">4</td>
+                                    <th class="p-4 md:p-5 border-b border-r-2 border-slate-200 text-xl font-black text-slate-700 w-1/5">$x$</th>
+                                    <td id="p1-cell-x-1" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-black text-slate-800 w-1/5">1</td>
+                                    <td id="p1-cell-x-2" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-black text-slate-800 w-1/5">2</td>
+                                    <td id="p1-cell-x-3" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-black text-slate-800 w-1/5">3</td>
+                                    <td id="p1-cell-x-4" class="p-4 md:p-5 border-b border-slate-200 text-2xl font-black text-slate-800 w-1/5">4</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white">
-                                    <th class="p-4 md:p-6 border-r-2 border-slate-200 text-xl md:text-2xl font-black text-indigo-700">$y$</th>
-                                    <td id="p1-cell-y-1" class="p-4 md:p-6 border-r border-slate-200 text-2xl md:text-3xl font-black text-indigo-600">2</td>
-                                    <td id="p1-cell-y-2" class="p-4 md:p-6 border-r border-slate-200 text-2xl md:text-3xl font-black text-indigo-600">4</td>
-                                    <td id="p1-cell-y-3" class="p-4 md:p-6 border-r border-slate-200 text-2xl md:text-3xl font-black text-indigo-600">6</td>
-                                    <td id="p1-cell-y-4" class="p-4 md:p-6 text-2xl md:text-3xl font-black text-indigo-600">8</td>
+                                    <th class="p-4 md:p-5 border-r-2 border-slate-200 text-xl font-black text-indigo-700">$y$</th>
+                                    <td id="p1-cell-y-1" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600">2</td>
+                                    <td id="p1-cell-y-2" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600">4</td>
+                                    <td id="p1-cell-y-3" class="p-4 md:p-5 border-r border-slate-200 text-2xl font-black text-indigo-600">6</td>
+                                    <td id="p1-cell-y-4" class="p-4 md:p-5 text-2xl font-black text-indigo-600">8</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
-            <div class="md:col-span-5 bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 flex flex-col justify-between">
-                <div class="mt-4">
-                    <h2 class="text-3xl font-black text-indigo-700 mb-6">정비례란 무엇일까요?</h2>
-                    <div class="bg-indigo-50 border-2 border-indigo-100 rounded-2xl p-6 text-lg md:text-xl font-bold text-slate-800 leading-relaxed shadow-inner">
-                        $x$의 값이 <strong class="text-indigo-600 text-2xl md:text-3xl">2배, 3배...</strong>로 변함에 따라<br><br>
-                        $y$의 값도 똑같이 <strong class="text-orange-600 text-2xl md:text-3xl">2배, 3배...</strong>로 변하는 관계를<br><br>
-                        우리는 <span class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xl">정비례</span>라고 부릅니다.
-                    </div>
+
+                <div class="mt-8 flex justify-center border-t border-slate-100 pt-6">
+                    <button id="p1-btn-next" onclick="switchPhase(2)" disabled class="w-full md:w-2/3 py-5 bg-slate-400 text-white text-xl font-bold rounded-2xl shadow-md transition-all flex items-center justify-center gap-3 cursor-not-allowed">
+                        <span id="p1-btn-text">개념을 충분히 읽어보세요 (10초)</span>
+                        <svg id="p1-btn-icon" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
                 </div>
-                <button id="p1-btn-next" onclick="switchPhase(2)" disabled class="mt-6 w-full py-5 md:py-6 bg-slate-400 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-md transition-all flex items-center justify-center gap-3 cursor-not-allowed">
-                    <span id="p1-btn-text">개념을 충분히 읽어보세요 (10초)</span>
-                    <svg id="p1-btn-icon" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </button>
             </div>
         </section>
 
-        <!-- [2단계] 정비례 판단 -->
-        <section id="phase-2" class="phase-section flex-grow grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch w-full">
-            <div class="md:col-span-7 bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 flex flex-col justify-between relative">
-                <div>
-                    <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
-                        <h2 class="text-2xl md:text-3xl font-black text-indigo-700 flex items-center gap-3"><span class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center text-2xl">🔍</span> 정비례 판단 연습하기</h2>
-                        <span id="p2-quiz-counter" class="bg-slate-100 text-slate-600 font-bold px-4 py-2 rounded-xl text-lg border border-slate-200">1 / 5</span>
-                    </div>
-                    <p class="text-lg md:text-xl text-slate-800 font-bold leading-relaxed bg-indigo-50 p-4 rounded-xl border border-indigo-100 shadow-sm">아래 표의 화살표 관계를 자세히 보고, 이 관계가 <strong class="text-indigo-600">정비례</strong>인지 판단해 보세요.</p>
+        <!-- ==========================================
+             [2단계] 정비례 판단 
+             ========================================== -->
+        <section id="phase-2" class="phase-section flex-col gap-6 items-center w-full">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 w-full relative">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                    <h2 class="text-2xl md:text-3xl font-black text-indigo-700 flex items-center gap-3">
+                        <span class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-full flex items-center justify-center text-2xl">🔍</span>
+                        정비례 판단 연습하기
+                    </h2>
+                    <span id="p2-quiz-counter" class="bg-slate-100 text-slate-600 font-bold px-4 py-2 rounded-xl text-lg border border-slate-200">1 / 5</span>
                 </div>
-                <div class="relative py-[5.5rem] px-2 flex-grow flex items-center">
+                <p class="text-lg md:text-xl text-slate-800 font-bold leading-relaxed bg-indigo-50 p-4 rounded-xl border border-indigo-100 shadow-sm">
+                    아래 표의 화살표 관계를 자세히 보고, 이 관계가 <strong class="text-indigo-600">정비례</strong>인지 판단해 보세요.
+                </p>
+
+                <!-- 표 영역 -->
+                <div class="relative py-[5.5rem] px-2 w-full" id="p2-table-wrapper">
                     <svg id="p2-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"></svg>
                     <div class="overflow-x-auto z-10 relative w-full">
                         <table class="w-full text-center border-separate border-spacing-0 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
@@ -116,70 +161,99 @@
                         </table>
                     </div>
                 </div>
-            </div>
-            <div class="md:col-span-5 bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 flex flex-col justify-center items-center h-full">
-                <div class="w-full flex flex-col items-center mt-2">
-                    <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 text-center">이 표는 <strong class="text-indigo-600">정비례</strong> 관계인가요?</h3>
-                    <div class="flex gap-4 w-full">
-                        <button class="p2-btn-judge flex-1 py-5 md:py-6 bg-white border-4 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 font-black text-xl md:text-2xl rounded-2xl transition-all shadow-sm" data-ans="yes">⭕ 네</button>
-                        <button class="p2-btn-judge flex-1 py-5 md:py-6 bg-white border-4 border-slate-200 hover:border-red-500 hover:bg-red-50 text-slate-700 font-black text-xl md:text-2xl rounded-2xl transition-all shadow-sm" data-ans="no">❌ 아니오</button>
+
+                <!-- 퀴즈 영역 (표 바로 아래) -->
+                <div class="mt-6 flex flex-col items-center border-t border-slate-100 pt-6">
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 text-center">
+                        이 표는 <strong class="text-indigo-600">정비례</strong> 관계인가요?
+                    </h3>
+                    <div class="flex gap-4 w-full md:w-2/3">
+                        <button class="p2-btn-judge flex-1 py-5 bg-white border-4 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 font-black text-xl rounded-2xl transition-all shadow-sm" data-ans="yes">
+                            ⭕ 네
+                        </button>
+                        <button class="p2-btn-judge flex-1 py-5 bg-white border-4 border-slate-200 hover:border-red-500 hover:bg-red-50 text-slate-700 font-black text-xl rounded-2xl transition-all shadow-sm" data-ans="no">
+                            ❌ 아니오
+                        </button>
                     </div>
+                    
+                    <div id="p2-feedback" class="mt-6 w-full md:w-2/3 hidden flex-col justify-center"></div>
+                    
+                    <button id="p2-btn-next" class="mt-6 w-full md:w-2/3 py-5 bg-slate-800 hover:bg-slate-900 text-white text-xl font-bold rounded-2xl hidden transition-all shadow-lg">
+                        다음 문제로 ➔
+                    </button>
                 </div>
-                <div id="p2-feedback" class="mt-6 w-full hidden flex-grow flex flex-col justify-center"></div>
-                <button id="p2-btn-next" onclick="nextQuiz(2)" class="mt-6 w-full py-5 bg-slate-800 hover:bg-slate-900 text-white text-xl font-bold rounded-2xl hidden transition-all shadow-lg">다음 문제로 ➔</button>
             </div>
         </section>
 
-        <!-- [3단계] 문제 풀어보기 -->
-        <section id="phase-3" class="phase-section flex-grow grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch w-full">
-            <div class="md:col-span-7 flex flex-col gap-4">
-                <div class="bg-indigo-600 rounded-2xl p-4 text-white text-center shadow-md"><h2 class="text-2xl font-black">✍️ 실전 문제 풀어보기</h2></div>
-                <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 flex flex-col flex-grow relative">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="bg-indigo-100 text-indigo-700 font-extrabold px-4 py-1.5 rounded-xl text-lg" id="p3-stage-badge">문제 1</span>
-                        <h2 id="p3-stage-title" class="text-xl md:text-2xl font-bold text-slate-800"></h2>
-                    </div>
-                    <p id="p3-stage-desc" class="text-lg md:text-xl text-slate-800 font-bold leading-relaxed bg-indigo-50 p-4 rounded-xl border border-indigo-200 mb-3 shadow-sm"></p>
-                    <div class="relative py-[5.5rem] px-2 flex-grow flex items-center">
-                        <svg id="p3-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"></svg>
-                        <div class="overflow-x-auto z-10 relative w-full">
-                            <table class="w-full text-center border-separate border-spacing-0 rounded-2xl overflow-hidden border-2 border-slate-200">
-                                <thead>
-                                    <tr class="bg-slate-50/80">
-                                        <th id="p3-hdr-x" class="p-3 md:p-4 border-b border-r-2 border-slate-200 text-lg font-black text-slate-600 w-1/5"></th>
-                                        <td id="p3-cell-x-1" class="p-3 md:p-4 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">1</td>
-                                        <td id="p3-cell-x-2" class="p-3 md:p-4 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">2</td>
-                                        <td id="p3-cell-x-3" class="p-3 md:p-4 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">3</td>
-                                        <td id="p3-cell-x-4" class="p-3 md:p-4 border-b border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">4</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white">
-                                        <th id="p3-hdr-y" class="p-3 md:p-4 border-r-2 border-slate-200 text-lg font-black text-indigo-700"></th>
-                                        <td class="p-2 md:p-3 border-r border-slate-200"><input type="text" inputmode="text" id="p3-input-y-1" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none"></td>
-                                        <td class="p-2 md:p-3 border-r border-slate-200"><input type="text" inputmode="text" id="p3-input-y-2" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none"></td>
-                                        <td class="p-2 md:p-3 border-r border-slate-200"><input type="text" inputmode="text" id="p3-input-y-3" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none"></td>
-                                        <td class="p-2 md:p-3"><input type="text" inputmode="text" id="p3-input-y-4" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+        <!-- ==========================================
+             [3단계] 문제 풀어보기 
+             ========================================== -->
+        <section id="phase-3" class="phase-section flex-col gap-6 items-center w-full">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 w-full relative">
+                <div class="flex items-center gap-3 mb-4 border-b border-slate-100 pb-3">
+                    <span class="bg-indigo-600 text-white font-extrabold px-4 py-1.5 rounded-xl text-lg shadow-md" id="p3-stage-badge">문제 1</span>
+                    <h2 id="p3-stage-title" class="text-2xl md:text-3xl font-bold text-slate-800"></h2>
+                </div>
+                <p id="p3-stage-desc" class="text-lg md:text-xl text-slate-800 font-bold leading-relaxed bg-indigo-50 p-4 rounded-xl border border-indigo-100 shadow-sm"></p>
+
+                <!-- 표 영역 -->
+                <div class="relative py-[5.5rem] px-2 w-full mt-4" id="p3-table-wrapper">
+                    <svg id="p3-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"></svg>
+                    <div class="overflow-x-auto z-10 relative w-full">
+                        <table class="w-full text-center border-separate border-spacing-0 rounded-2xl overflow-hidden border-2 border-slate-200">
+                            <thead>
+                                <tr class="bg-slate-50/80">
+                                    <th id="p3-hdr-x" class="p-4 md:p-5 border-b border-r-2 border-slate-200 text-xl font-black text-slate-600 w-1/5"></th>
+                                    <td id="p3-cell-x-1" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">1</td>
+                                    <td id="p3-cell-x-2" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">2</td>
+                                    <td id="p3-cell-x-3" class="p-4 md:p-5 border-b border-r border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">3</td>
+                                    <td id="p3-cell-x-4" class="p-4 md:p-5 border-b border-slate-200 text-2xl font-extrabold text-slate-800 w-1/5">4</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white">
+                                    <th id="p3-hdr-y" class="p-4 md:p-5 border-r-2 border-slate-200 text-xl font-black text-indigo-700"></th>
+                                    <td id="p3-cell-y-1" class="p-3 md:p-4 border-r border-slate-200">
+                                        <input type="text" inputmode="text" id="p3-input-y-1" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none">
+                                    </td>
+                                    <td id="p3-cell-y-2" class="p-3 md:p-4 border-r border-slate-200">
+                                        <input type="text" inputmode="text" id="p3-input-y-2" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none">
+                                    </td>
+                                    <td id="p3-cell-y-3" class="p-3 md:p-4 border-r border-slate-200">
+                                        <input type="text" inputmode="text" id="p3-input-y-3" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none">
+                                    </td>
+                                    <td id="p3-cell-y-4" class="p-3 md:p-4">
+                                        <input type="text" inputmode="text" id="p3-input-y-4" class="w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
-            <div class="md:col-span-5 bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 flex flex-col justify-center h-full">
-                <div class="w-full">
-                    <button id="p3-btn-check" class="w-full py-5 md:py-6 bg-indigo-600 hover:bg-indigo-700 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-lg transition-all">🔍 표 정답 확인하기</button>
-                    <p id="p3-msg-error" class="mt-4 text-base md:text-lg font-bold text-red-500 text-center hidden bounce-in bg-red-50 px-4 py-3 rounded-xl border border-red-200 w-full">⚠️ 계산이 틀린 곳이 있습니다!</p>
+
+                <!-- 제출부 -->
+                <div class="w-full flex flex-col items-center mt-6">
+                    <button id="p3-btn-check" class="w-full md:w-2/3 py-5 bg-indigo-600 hover:bg-indigo-700 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-lg transition-all">
+                        🔍 표 정답 확인하기
+                    </button>
+                    <p id="p3-msg-error" class="mt-4 text-lg font-bold text-red-500 text-center hidden bounce-in bg-red-50 px-4 py-3 rounded-xl border border-red-200 w-full md:w-2/3">
+                        ⚠️ 계산이 틀린 곳이 있습니다!
+                    </p>
                 </div>
-                <div id="p3-judgment-area" class="mt-6 flex-col items-center flex-grow hidden">
-                    <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-5 text-center">이 관계는 <span class="text-indigo-600 font-extrabold">정비례</span>인가요?</h3>
-                    <div class="flex gap-3 w-full">
-                        <button class="p3-btn-judge flex-1 py-4 md:py-5 bg-white border-4 border-slate-200 hover:border-emerald-500 text-slate-700 font-bold text-lg md:text-xl rounded-2xl" data-ans="yes">⭕ 맞습니다</button>
-                        <button class="p3-btn-judge flex-1 py-4 md:py-5 bg-white border-4 border-slate-200 hover:border-red-500 text-slate-700 font-bold text-lg md:text-xl rounded-2xl" data-ans="no">❌ 아닙니다</button>
+
+                <!-- 정비례 판단 (표와 버튼 바로 아래 위치) -->
+                <div id="p3-judgment-area" class="mt-8 flex-col items-center w-full border-t border-slate-100 pt-6 hidden">
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 text-center">
+                        이 관계는 <span class="text-indigo-600 font-extrabold">정비례</span>인가요?
+                    </h3>
+                    <div class="flex gap-4 w-full md:w-2/3 mx-auto">
+                        <button class="p3-btn-judge flex-1 py-5 bg-white border-4 border-slate-200 hover:border-emerald-500 text-slate-700 font-bold text-xl rounded-2xl" data-ans="yes">⭕ 맞습니다</button>
+                        <button class="p3-btn-judge flex-1 py-5 bg-white border-4 border-slate-200 hover:border-red-500 text-slate-700 font-bold text-xl rounded-2xl" data-ans="no">❌ 아닙니다</button>
                     </div>
-                    <div id="p3-feedback" class="mt-4 w-full hidden flex-grow flex-col justify-center"></div>
-                    <button id="p3-btn-next" onclick="nextQuiz(3)" class="mt-4 w-full py-5 bg-slate-800 text-white text-xl md:text-2xl font-bold rounded-2xl hidden shadow-lg">다음 문제 ➔</button>
+                    
+                    <div id="p3-judge-feedback" class="mt-6 w-full md:w-2/3 mx-auto hidden flex-col justify-center"></div>
+                    
+                    <button id="p3-btn-next" class="mt-6 w-full md:w-2/3 mx-auto py-5 bg-slate-800 text-white text-xl font-bold rounded-2xl hidden shadow-lg">다음 문제 ➔</button>
                 </div>
             </div>
         </section>
@@ -197,84 +271,113 @@
                         <li>✔️ 덧셈식($y = x + 2$ 등)은 배수 규칙이 깨지므로 정비례가 아닙니다.</li>
                     </ul>
                 </div>
-                <button onclick="location.reload()" class="px-8 py-5 bg-white text-indigo-700 text-xl md:text-2xl font-bold rounded-2xl shadow-xl hover:bg-slate-100 transition-colors">처음부터 다시 복습하기</button>
+                <div>
+                    <button onclick="location.reload()" class="px-8 py-5 bg-white text-indigo-700 text-xl font-bold rounded-2xl shadow-xl hover:bg-slate-100 transition-colors">
+                        처음부터 다시 복습하기
+                    </button>
+                </div>
             </div>
         </div>
 
     </main>
 
     <script>
-        // 공통 유틸 및 데이터 구조 (공통화)
+        // ==========================================
+        // 1. 공통 유틸리티 및 전역 상태
+        // ==========================================
         let currentPhase = 1;
-        let p1Timer;
-        
-        const quizzes = {
-            2: [
-                { func: x=>3*x, isProp: true, hint: "$x$와 $y$ 사이의 관계식은 $y=3x$로 정비례 입니다." },
-                { func: x=>-2*x, isProp: true, hint: "$x$와 $y$ 사이의 관계식은 $y=-2x$로 정비례 입니다." },
-                { func: x=>x+3, isProp: false, hint: "$x$와 $y$ 사이의 관계식은 $y=x+3$이므로 정비례가 아닙니다." },
-                { func: x=>5*x, isProp: true, hint: "$x$와 $y$ 사이의 관계식은 $y=5x$로 정비례 입니다." },
-                { func: x=>-x+1, isProp: false, hint: "$x$와 $y$ 사이의 관계식은 $y=-x+1$이므로 정비례가 아닙니다." }
-            ],
-            3: [
-                { title: "초콜릿 가격", desc: "초콜릿 1개의 가격은 300원입니다. 초콜릿 개수 $x$와 가격 $y$(원) 사이의 관계식 $y = 300x$에 맞게 채우세요.", xH: "$x$ (개수)", yH: "$y$ (가격)", func: x=>300*x, isProp: true, hint: "$x$와 $y$ 사이의 관계식은 $y=300x$로 정비례 입니다." },
-                { title: "하강하는 엘리베이터", desc: "매초 2m씩 아래로 내려가는 엘리베이터입니다. 하강 시간 $x$(초)와 위치 변화량 $y$(m)의 관계식 $y = -2x$에 맞게 채우세요.", xH: "$x$ (시간)", yH: "$y$ (위치)", func: x=>-2*x, isProp: true, hint: "$x$와 $y$ 사이의 관계식은 $y=-2x$로 정비례 입니다." },
-                { title: "저금통 잔액", desc: "먼저 2만원이 있는 저금통에 매월 1만원씩 저금합니다. 개월 수 $x$와 총 금액 $y$(만원)의 관계식 $y = x + 2$에 맞게 채우세요.", xH: "$x$ (개월)", yH: "$y$ (총금액)", func: x=>x+2, isProp: false, hint: "$x$와 $y$ 사이의 관계식은 $y=x+2$이므로 정비례가 아닙니다." }
-            ]
-        };
-        let currentQuizIdx = { 2: 0, 3: 0 };
-        let arrowDrawn = { 1: false, 2: false, 3: false };
 
         function renderMath() {
             if (typeof renderMathInElement !== 'undefined') {
-                renderMathInElement(document.body, { delimiters: [{left:'$$',right:'$$',display:true},{left:'\\[',right:'\\]',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false}], throwOnError: false });
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false}
+                    ],
+                    throwOnError: false
+                });
             }
         }
 
-        // 네비게이션 및 화면 전환
-        function switchPhase(num) {
-            currentPhase = num;
+        function switchPhase(phaseNum) {
+            currentPhase = phaseNum;
             document.querySelectorAll('.phase-section').forEach(el => el.classList.remove('phase-active'));
-            document.getElementById(num <= 3 ? `phase-${num}` : 'final-summary').classList.add('phase-active');
+            
+            if(phaseNum <= 3) {
+                document.getElementById(`phase-${phaseNum}`).classList.add('phase-active');
+            } else {
+                document.getElementById('final-summary').classList.add('phase-active');
+            }
 
             for(let i=1; i<=3; i++) {
                 const nav = document.getElementById(`nav-phase-${i}`);
-                nav.className = `px-4 py-2 rounded-xl font-${i===num?'black':'bold'} text-base md:text-lg transition-all border-2 ` + 
-                                (i===num ? "border-indigo-600 bg-indigo-50 text-indigo-700" : (i<num ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-200 bg-white text-slate-400"));
+                if(i === phaseNum) {
+                    nav.className = "px-4 py-2 rounded-xl font-black text-base md:text-lg transition-all border-2 border-indigo-600 bg-indigo-50 text-indigo-700";
+                } else if(i < phaseNum) {
+                    nav.className = "px-4 py-2 rounded-xl font-bold text-base md:text-lg transition-all border-2 border-emerald-500 bg-emerald-500 text-white";
+                } else {
+                    nav.className = "px-4 py-2 rounded-xl font-bold text-base md:text-lg transition-all border-2 border-slate-200 bg-white text-slate-400";
+                }
             }
 
-            if (num === 1) { setTimeout(() => { drawAllArrows('p1', x=>2*x, true); renderMath(); }, 50); initPhase1Timer(); } 
-            else if (num === 2) loadQuiz(2); 
-            else if (num === 3) loadQuiz(3);
+            if (phaseNum === 1) {
+                setTimeout(() => { drawPhase1Arrows(); renderMath(); }, 50);
+                initPhase1Timer(); // 10초 타이머 시작
+            } else if (phaseNum === 2) {
+                initPhase2();
+            } else if (phaseNum === 3) {
+                initPhase3();
+            }
+            // 스크롤이 이상하게 튀는 것을 방지하기 위해 0,0으로 강제 고정 
             window.scrollTo(0, 0); 
         }
 
-        // 공통 화살표 엔진 (Z-index 그룹화 포함)
+        // 공통 화살표 그리기 엔진 
+        // 핵심 로직: 모든 선(Path)을 먼저 그리고, 모든 글씨(Label)를 나중에 그려 글씨 겹침 완벽 해결
         function drawArrowCurve(svg, prefix, fromCol, toCol, isTop, textLabel, colorHex) {
-            const rect1 = document.getElementById(`${prefix}-cell-${isTop?'x':'y'}-${fromCol}`)?.getBoundingClientRect();
-            const rect2 = document.getElementById(`${prefix}-cell-${isTop?'x':'y'}-${toCol}`)?.getBoundingClientRect();
             const containerRect = svg.getBoundingClientRect();
-            if(!rect1 || !rect2 || rect1.width === 0) return;
+            const fromId = `${prefix}-cell-${isTop ? 'x' : 'y'}-${fromCol}`;
+            const toId = `${prefix}-cell-${isTop ? 'x' : 'y'}-${toCol}`;
+            const fromEl = document.getElementById(fromId);
+            const toEl = document.getElementById(toId);
 
-            const startX = rect1.left + rect1.width/2 - containerRect.left;
+            if (!fromEl || !toEl) return;
+            const rect1 = fromEl.getBoundingClientRect();
+            const rect2 = toEl.getBoundingClientRect();
+            if(rect1.width === 0 || rect2.width === 0) return;
+
+            const startX = rect1.left + rect1.width / 2 - containerRect.left;
             const startY = isTop ? (rect1.top - containerRect.top + 2) : (rect1.bottom - containerRect.top - 2);
-            const endX = rect2.left + rect2.width/2 - containerRect.left;
+            const endX = rect2.left + rect2.width / 2 - containerRect.left;
             const endY = isTop ? (rect2.top - containerRect.top + 2) : (rect2.bottom - containerRect.top - 2);
+
             const midX = (startX + endX) / 2;
+            const dist = toCol - fromCol;
             
-            const archHeight = 75 + ((toCol - fromCol) * 25); 
+            // 크기 확대에 맞게 커브 높이도 여유있게 증가
+            const archHeight = 75 + (dist * 25); 
             const controlY = startY + (isTop ? -archHeight : archHeight);
+
+            // 베지에 곡선의 실제 최고점(Apex) 위치 계산
             const apexY = startY + (isTop ? -archHeight/2 : archHeight/2);
 
-            let pathsG = svg.querySelector('.paths-group'), labelsG = svg.querySelector('.labels-group');
-            if (!pathsG) {
-                svg.appendChild(pathsG = document.createElementNS("http://www.w3.org/2000/svg", "g"));
-                pathsG.setAttribute("class", "paths-group");
-                svg.appendChild(labelsG = document.createElementNS("http://www.w3.org/2000/svg", "g"));
-                labelsG.setAttribute("class", "labels-group");
+            // SVG 내 그룹화 영역 생성 (Z-index 문제 해결을 위해 Paths는 뒤에, Labels는 앞에 배치)
+            let pathsGroup = svg.querySelector('.paths-group');
+            let labelsGroup = svg.querySelector('.labels-group');
+            
+            if (!pathsGroup) {
+                pathsGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                pathsGroup.setAttribute("class", "paths-group");
+                svg.appendChild(pathsGroup);
+                
+                labelsGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                labelsGroup.setAttribute("class", "labels-group");
+                svg.appendChild(labelsGroup);
             }
 
-            const markerId = `arrow-${colorHex.replace('#','')}`;
+            const markerId = `arrowhead-${prefix}-${colorHex.replace('#','')}`;
             if (!document.getElementById(markerId)) {
                 const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
                 defs.innerHTML = `<marker id="${markerId}" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0,0 10,3.5 0,7 2,3.5" fill="${colorHex}" /></marker>`;
@@ -283,185 +386,375 @@
 
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
             path.setAttribute("d", `M ${startX} ${startY} Q ${midX} ${controlY} ${endX} ${endY}`);
-            path.setAttribute("fill", "none"); path.setAttribute("stroke", colorHex);
-            path.setAttribute("stroke-width", "4"); path.setAttribute("class", "arrow-path");
+            path.setAttribute("fill", "none");
+            path.setAttribute("stroke", colorHex);
+            path.setAttribute("stroke-width", "4");
+            path.setAttribute("class", "arrow-path");
             path.setAttribute("marker-end", `url(#${markerId})`);
 
-            const txtWidth = textLabel.length > 5 ? 110 : 70;
+            // 텍스트 배경 (가독성 보호용 알약)
             const textBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            textBg.setAttribute("x", midX - txtWidth/2); textBg.setAttribute("y", apexY - 15); 
-            textBg.setAttribute("width", txtWidth); textBg.setAttribute("height", "30");
-            textBg.setAttribute("fill", "#ffffff"); textBg.setAttribute("stroke", colorHex);
-            textBg.setAttribute("stroke-width", "2"); textBg.setAttribute("rx", "15");
+            const txtWidth = textLabel.length > 5 ? 110 : 70;
+            textBg.setAttribute("x", midX - txtWidth/2);
+            textBg.setAttribute("y", apexY - 15); 
+            textBg.setAttribute("width", txtWidth);
+            textBg.setAttribute("height", "30");
+            textBg.setAttribute("fill", "#ffffff");
+            textBg.setAttribute("stroke", colorHex);
+            textBg.setAttribute("stroke-width", "2");
+            textBg.setAttribute("rx", "15");
 
+            // 텍스트
             const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            txt.setAttribute("x", midX); txt.setAttribute("y", apexY + 6); 
-            txt.setAttribute("fill", colorHex); txt.setAttribute("font-size", "16");
-            txt.setAttribute("font-weight", "900"); txt.setAttribute("text-anchor", "middle");
+            txt.setAttribute("x", midX);
+            txt.setAttribute("y", apexY + 6); 
+            txt.setAttribute("fill", colorHex);
+            txt.setAttribute("font-size", "16");
+            txt.setAttribute("font-weight", "900");
+            txt.setAttribute("text-anchor", "middle");
             txt.textContent = textLabel;
 
-            pathsG.appendChild(path); labelsG.appendChild(textBg); labelsG.appendChild(txt);
+            // 라인들은 Paths 그룹에, 글씨는 Labels 그룹에 넣어 겹침 완벽 방지
+            pathsGroup.appendChild(path);
+            labelsGroup.appendChild(textBg);
+            labelsGroup.appendChild(txt);
         }
 
-        function drawAllArrows(prefix, func, isProp) {
-            const svg = document.getElementById(`${prefix}-svg-overlay`);
-            svg.innerHTML = '';
-            const y1 = func(1);
-            for(let target=2; target<=4; target++) {
-                drawArrowCurve(svg, prefix, 1, target, true, `${target}배`, "#3b82f6");
-                if (isProp) {
-                    drawArrowCurve(svg, prefix, 1, target, false, `${target}배`, "#ea580c");
-                } else {
-                    const diff = func(target) - y1;
-                    drawArrowCurve(svg, prefix, 1, target, false, diff >= 0 ? `+${diff}` : `${diff}`, "#ef4444");
-                }
-            }
-            arrowDrawn[currentPhase] = true;
-        }
-
-        // 공통 O/X 버튼 처리
-        function setupJudgeButtons(phase) {
-            document.querySelectorAll(`.p${phase}-btn-judge`).forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const isYes = e.currentTarget.getAttribute('data-ans') === 'yes';
-                    const quiz = quizzes[phase][currentQuizIdx[phase]];
-                    const isCorrect = (isYes === quiz.isProp);
-                    const prefix = `p${phase}`;
-
-                    document.querySelectorAll(`.${prefix}-btn-judge`).forEach(b => { b.disabled = true; b.classList.add('opacity-50'); });
-                    e.currentTarget.classList.remove('opacity-50');
-
-                    const fb = document.getElementById(`${prefix}-feedback`);
-                    if(isCorrect) {
-                        e.currentTarget.classList.add(isYes ? 'bg-emerald-50' : 'bg-red-50', isYes ? 'border-emerald-500' : 'border-red-500');
-                        fb.innerHTML = `
-                            <div class="bounce-in text-center py-4 flex flex-col items-center gap-3 w-full bg-emerald-50 border-2 border-emerald-200 rounded-2xl px-4">
-                                <span class="text-emerald-600 font-extrabold text-2xl md:text-3xl flex items-center justify-center gap-2">🎉 정답입니다! 🎆</span>
-                                <span class="text-slate-800 font-bold text-lg md:text-xl mt-1">${quiz.hint}</span>
-                            </div>`;
-                        fb.classList.remove('hidden'); fb.classList.add('flex');
-                        document.getElementById(`${prefix}-btn-next`).classList.remove('hidden');
-                        renderMath();
-                    } else {
-                        e.currentTarget.classList.add('bg-red-50', 'border-red-500');
-                        fb.innerHTML = `<div class="p-5 bg-red-50 border-2 border-red-200 rounded-2xl bounce-in text-center w-full"><span class="text-red-600 font-bold text-lg">앗, 틀렸습니다. 위아래 화살표 규칙이 같은지 보세요!</span></div>`;
-                        fb.classList.remove('hidden'); fb.classList.add('flex');
-                        setTimeout(() => {
-                            document.querySelectorAll(`.${prefix}-btn-judge`).forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'bg-emerald-50', 'bg-red-50', 'border-emerald-500', 'border-red-500'); });
-                            fb.classList.add('hidden'); fb.classList.remove('flex');
-                        }, 2500);
-                    }
-                });
-            });
-        }
-        setupJudgeButtons(2); setupJudgeButtons(3);
-
-        // 공통 로드 & 진행 로직
-        function loadQuiz(phase) {
-            const quiz = quizzes[phase][currentQuizIdx[phase]];
-            const prefix = `p${phase}`;
-            arrowDrawn[phase] = false;
-
-            document.getElementById(`${prefix}-svg-overlay`).innerHTML = '';
-            document.getElementById(`${prefix}-feedback`).classList.add('hidden');
-            document.getElementById(`${prefix}-feedback`).classList.remove('flex');
-            document.getElementById(`${prefix}-btn-next`).classList.add('hidden');
-            
-            document.querySelectorAll(`.${prefix}-btn-judge`).forEach(btn => {
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'bg-emerald-50', 'border-emerald-500', 'bg-red-50', 'border-red-500');
-            });
-
-            if (phase === 2) {
-                document.getElementById('p2-quiz-counter').innerText = `${currentQuizIdx[2] + 1} / ${quizzes[2].length}`;
-                for(let i=1; i<=4; i++) document.getElementById(`p2-cell-y-${i}`).innerText = quiz.func(i);
-                setTimeout(() => { drawAllArrows('p2', quiz.func, quiz.isProp); renderMath(); }, 50);
-            } else if (phase === 3) {
-                document.getElementById('p3-stage-badge').innerText = `문제 ${currentQuizIdx[3] + 1}`;
-                document.getElementById('p3-stage-title').innerText = quiz.title;
-                document.getElementById('p3-stage-desc').innerHTML = quiz.desc;
-                document.getElementById('p3-hdr-x').innerHTML = quiz.xH;
-                document.getElementById('p3-hdr-y').innerHTML = quiz.yH;
-                
-                document.getElementById('p3-btn-check').classList.remove('hidden');
-                document.getElementById('p3-msg-error').classList.add('hidden');
-                document.getElementById('p3-judgment-area').classList.add('hidden');
-                document.getElementById('p3-judgment-area').classList.remove('flex');
-
-                for(let i=1; i<=4; i++) {
-                    const inp = document.getElementById(`p3-input-y-${i}`);
-                    inp.value = ''; inp.disabled = false;
-                    inp.className = "w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none";
-                }
-                setTimeout(() => renderMath(), 50);
-            }
-        }
-
-        function nextQuiz(phase) {
-            currentQuizIdx[phase]++;
-            if(currentQuizIdx[phase] < quizzes[phase].length) loadQuiz(phase);
-            else switchPhase(phase + 1);
-        }
-
-        // 1단계 타이머
+        // ==========================================
+        // [1단계] 로직
+        // ==========================================
+        let p1Timer; // 타이머 변수
+        
         function initPhase1Timer() {
             const btn = document.getElementById('p1-btn-next');
-            btn.disabled = true; btn.className = "mt-6 w-full py-5 md:py-6 bg-slate-400 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-md transition-all flex items-center justify-center gap-3 cursor-not-allowed";
-            document.getElementById('p1-btn-icon').classList.add('hidden');
-            let timeLeft = 10;
-            document.getElementById('p1-btn-text').innerText = `개념을 충분히 읽어보세요 (${timeLeft}초)`;
+            const btnText = document.getElementById('p1-btn-text');
+            const btnIcon = document.getElementById('p1-btn-icon');
             
+            // 버튼 초기화 (비활성화 상태)
+            btn.disabled = true;
+            btn.className = "w-full md:w-2/3 py-5 bg-slate-400 text-white text-xl font-bold rounded-2xl shadow-md transition-all flex items-center justify-center gap-3 cursor-not-allowed";
+            btnIcon.classList.add('hidden');
+            
+            let timeLeft = 10;
+            btnText.innerText = `개념을 충분히 읽어보세요 (${timeLeft}초)`;
+            
+            // 기존 타이머 클리어 후 새 타이머 시작
             clearInterval(p1Timer);
             p1Timer = setInterval(() => {
-                if (--timeLeft > 0) {
-                    document.getElementById('p1-btn-text').innerText = `개념을 충분히 읽어보세요 (${timeLeft}초)`;
+                timeLeft--;
+                if (timeLeft > 0) {
+                    btnText.innerText = `개념을 충분히 읽어보세요 (${timeLeft}초)`;
                 } else {
+                    // 타이머 종료 시 버튼 활성화
                     clearInterval(p1Timer);
-                    btn.disabled = false; btn.className = "mt-6 w-full py-5 md:py-6 bg-indigo-600 hover:bg-indigo-700 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-lg transition-transform hover:-translate-y-1 flex items-center justify-center gap-3";
-                    document.getElementById('p1-btn-text').innerText = "이해했어요! 판단 연습하러 가기";
-                    document.getElementById('p1-btn-icon').classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.className = "w-full md:w-2/3 py-5 bg-indigo-600 hover:bg-indigo-700 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-lg transition-transform hover:-translate-y-1 flex items-center justify-center gap-3";
+                    btnText.innerText = "이해했어요! 정비례 판단 연습하러 가기";
+                    btnIcon.classList.remove('hidden');
                 }
             }, 1000);
         }
 
-        // 3단계 입력 확인
+        function drawPhase1Arrows() {
+            const svg = document.getElementById('p1-svg-overlay');
+            svg.innerHTML = '';
+            drawArrowCurve(svg, 'p1', 1, 2, true, "2배", "#3b82f6");
+            drawArrowCurve(svg, 'p1', 1, 3, true, "3배", "#2563eb");
+            drawArrowCurve(svg, 'p1', 1, 4, true, "4배", "#1d4ed8");
+            drawArrowCurve(svg, 'p1', 1, 2, false, "2배", "#ea580c");
+            drawArrowCurve(svg, 'p1', 1, 3, false, "3배", "#c2410c");
+            drawArrowCurve(svg, 'p1', 1, 4, false, "4배", "#9a3412");
+        }
+
+        // ==========================================
+        // [2단계] 로직
+        // ==========================================
+        const p2Quizzes = [
+            { id:1, formula: "y = 3x", func: (x)=>3*x, isProp: true, hint: "정답입니다! $x$와 $y$ 사이의 관계식은 $y=3x$로 정비례 입니다." },
+            { id:2, formula: "y = -2x", func: (x)=>-2*x, isProp: true, hint: "정답입니다! $x$와 $y$ 사이의 관계식은 $y=-2x$로 정비례 입니다." },
+            { id:3, formula: "y = x + 3", func: (x)=>x+3, isProp: false, hint: "정답입니다! $x$와 $y$ 사이의 관계식은 $y=x+3$이므로 정비례가 아닙니다." },
+            { id:4, formula: "y = 5x", func: (x)=>5*x, isProp: true, hint: "정답입니다! $x$와 $y$ 사이의 관계식은 $y=5x$로 정비례 입니다." },
+            { id:5, formula: "y = -x + 1", func: (x)=>-x+1, isProp: false, hint: "정답입니다! $x$와 $y$ 사이의 관계식은 $y=-x+1$이므로 정비례가 아닙니다." }
+        ];
+        let p2CurrentQuiz = 0;
+
+        function initPhase2() {
+            p2CurrentQuiz = 0;
+            loadP2Quiz();
+        }
+
+        function loadP2Quiz() {
+            const quiz = p2Quizzes[p2CurrentQuiz];
+            document.getElementById('p2-quiz-counter').innerText = `${p2CurrentQuiz + 1} / 5`;
+            
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`p2-cell-y-${i}`).innerText = quiz.func(i);
+            }
+
+            const svg = document.getElementById('p2-svg-overlay');
+            svg.innerHTML = '';
+            
+            document.getElementById('p2-feedback').classList.add('hidden');
+            document.getElementById('p2-btn-next').classList.add('hidden');
+            document.querySelectorAll('.p2-btn-judge').forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'bg-emerald-50', 'border-emerald-500', 'bg-red-50', 'border-red-500');
+            });
+            
+            setTimeout(() => {
+                drawP2Arrows();
+                renderMath();
+            }, 50);
+        }
+
+        document.querySelectorAll('.p2-btn-judge').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const isYes = e.currentTarget.getAttribute('data-ans') === 'yes';
+                const quiz = p2Quizzes[p2CurrentQuiz];
+                const isCorrect = (isYes === quiz.isProp);
+
+                document.querySelectorAll('.p2-btn-judge').forEach(b => { b.disabled = true; b.classList.add('opacity-50'); });
+                e.currentTarget.classList.remove('opacity-50');
+
+                const fb = document.getElementById('p2-feedback');
+                if(isCorrect) {
+                    e.currentTarget.classList.add(isYes ? 'bg-emerald-50' : 'bg-red-50', isYes ? 'border-emerald-500' : 'border-red-500');
+                    fb.innerHTML = `
+                        <div class="bounce-in text-center py-4 flex flex-col items-center gap-3 w-full bg-emerald-50 border-2 border-emerald-200 rounded-2xl px-4">
+                            <span class="text-emerald-600 font-extrabold text-2xl md:text-3xl flex items-center justify-center gap-2">
+                                🎉 정답입니다! 🎆
+                            </span>
+                            <span class="text-slate-800 font-bold text-lg md:text-xl mt-1" id="p2-hint-math">
+                                ${quiz.hint.replace('정답입니다! ', '')}
+                            </span>
+                        </div>
+                    `;
+                    fb.classList.remove('hidden');
+                    fb.classList.add('flex');
+                    document.getElementById('p2-btn-next').classList.remove('hidden');
+                    renderMath();
+                } else {
+                    e.currentTarget.classList.add('bg-red-50', 'border-red-500');
+                    fb.innerHTML = `<div class="p-5 bg-red-50 border-2 border-red-200 rounded-2xl bounce-in text-center w-full"><span class="text-red-600 font-bold text-lg">앗, 틀렸습니다. 위아래 화살표 규칙이 같은지 보세요!</span></div>`;
+                    fb.classList.remove('hidden');
+                    fb.classList.add('flex');
+                    
+                    setTimeout(() => {
+                        document.querySelectorAll('.p2-btn-judge').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'bg-emerald-50', 'bg-red-50', 'border-emerald-500', 'border-red-500'); });
+                        fb.classList.add('hidden');
+                        fb.classList.remove('flex');
+                    }, 2500);
+                }
+            });
+        });
+
+        document.getElementById('p2-btn-next').addEventListener('click', () => {
+            p2CurrentQuiz++;
+            if(p2CurrentQuiz < p2Quizzes.length) {
+                loadP2Quiz();
+            } else {
+                switchPhase(3);
+            }
+        });
+
+        function drawP2Arrows() {
+            const svg = document.getElementById('p2-svg-overlay');
+            svg.innerHTML = '';
+            const quiz = p2Quizzes[p2CurrentQuiz];
+            const y1 = quiz.func(1);
+
+            for(let target=2; target<=4; target++) {
+                drawArrowCurve(svg, 'p2', 1, target, true, `${target}배`, "#3b82f6");
+                if (quiz.isProp) {
+                    drawArrowCurve(svg, 'p2', 1, target, false, `${target}배`, "#ea580c");
+                } else {
+                    const diff = quiz.func(target) - y1;
+                    const diffStr = diff >= 0 ? `+${diff}` : `${diff}`;
+                    drawArrowCurve(svg, 'p2', 1, target, false, diffStr, "#ef4444");
+                }
+            }
+        }
+
+        // ==========================================
+        // [3단계] 로직
+        // ==========================================
+        const p3Stages = [
+            {
+                title: "문제 1: 초콜릿 가격", desc: "초콜릿 1개의 가격은 300원입니다. 초콜릿 개수 $x$와 가격 $y$(원) 사이의 관계식 $y = 300x$에 맞게 채우세요.",
+                xHeader: "$x$ (개수)", yHeader: "$y$ (가격)", calc: (x)=>300*x, isProp: true, hint: "정답입니다! $x$와 $y$ 사이의 관계식은 $y=300x$로 정비례 입니다."
+            },
+            {
+                title: "문제 2: 하강하는 엘리베이터", desc: "매초 2m씩 아래로 내려가는 엘리베이터입니다. 하강 시간 $x$(초)와 위치 변화량 $y$(m)의 관계식 $y = -2x$에 맞게 채우세요.",
+                xHeader: "$x$ (시간)", yHeader: "$y$ (위치)", calc: (x)=>-2*x, isProp: true, hint: "정답입니다! $x$와 $y$ 사이의 관계식은 $y=-2x$로 정비례 입니다."
+            },
+            {
+                title: "문제 3: 저금통 잔액", desc: "먼저 2만원이 있는 저금통에 매월 1만원씩 저금합니다. 개월 수 $x$와 총 금액 $y$(만원)의 관계식 $y = x + 2$에 맞게 채우세요.",
+                xHeader: "$x$ (개월)", yHeader: "$y$ (총금액)", calc: (x)=>x+2, isProp: false, hint: "정답입니다! $x$와 $y$ 사이의 관계식은 $y=x+2$이므로 정비례가 아닙니다."
+            }
+        ];
+        let p3CurrentStage = 0;
+        let p3ArrowDrawn = false;
+
+        function initPhase3() {
+            p3CurrentStage = 0;
+            loadP3Stage();
+        }
+
+        function loadP3Stage() {
+            const stage = p3Stages[p3CurrentStage];
+            document.getElementById('p3-stage-badge').innerText = `문제 ${p3CurrentStage + 1}`;
+            document.getElementById('p3-stage-title').innerText = stage.title.split(': ')[1];
+            document.getElementById('p3-stage-desc').innerHTML = stage.desc;
+            document.getElementById('p3-hdr-x').innerHTML = stage.xHeader;
+            document.getElementById('p3-hdr-y').innerHTML = stage.yHeader;
+
+            // type을 text로 바꾸어 음수 입력이 자유롭도록 하였으므로 입력값 초기화
+            for(let i=1; i<=4; i++) {
+                const inp = document.getElementById(`p3-input-y-${i}`);
+                inp.value = '';
+                inp.disabled = false;
+                inp.className = "w-full text-center text-2xl md:text-3xl font-extrabold text-indigo-700 bg-indigo-50/70 border-2 border-indigo-200 rounded-xl py-2 focus:ring-4 focus:ring-indigo-400 focus:outline-none";
+            }
+
+            p3ArrowDrawn = false;
+            document.getElementById('p3-svg-overlay').innerHTML = '';
+            document.getElementById('p3-btn-check').classList.remove('hidden');
+            document.getElementById('p3-msg-error').classList.add('hidden');
+            
+            const judgmentArea = document.getElementById('p3-judgment-area');
+            judgmentArea.classList.add('hidden');
+            judgmentArea.classList.remove('flex');
+            
+            document.getElementById('p3-btn-next').classList.add('hidden');
+            
+            document.querySelectorAll('.p3-btn-judge').forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'bg-emerald-50', 'border-emerald-500', 'bg-red-50', 'border-red-500');
+            });
+            setTimeout(() => { renderMath(); }, 50);
+        }
+
         document.getElementById('p3-btn-check').addEventListener('click', () => {
-            const quiz = quizzes[3][currentQuizIdx[3]];
+            const stage = p3Stages[p3CurrentStage];
             let allCorrect = true;
             for(let i=1; i<=4; i++) {
                 const inp = document.getElementById(`p3-input-y-${i}`);
-                const val = parseInt(inp.value, 10);
-                if(isNaN(val) || val !== quiz.func(i)) {
-                    allCorrect = false; inp.classList.add('bg-red-50', 'border-red-400', 'text-red-600');
+                // 텍스트 입력을 정수로 파싱하여 비교 (음수 부호 등 허용)
+                const userValue = parseInt(inp.value, 10);
+                if(isNaN(userValue) || userValue !== stage.calc(i)) {
+                    allCorrect = false;
+                    inp.classList.add('bg-red-50', 'border-red-400', 'text-red-600');
                 } else {
-                    inp.classList.remove('bg-red-50', 'border-red-400', 'text-red-600'); inp.classList.add('border-emerald-400');
+                    inp.classList.remove('bg-red-50', 'border-red-400', 'text-red-600');
+                    inp.classList.add('border-emerald-400');
                 }
             }
+
             if(allCorrect) {
                 document.getElementById('p3-msg-error').classList.add('hidden');
                 document.getElementById('p3-btn-check').classList.add('hidden');
+                
                 for(let i=1; i<=4; i++) {
                     const inp = document.getElementById(`p3-input-y-${i}`);
-                    inp.disabled = true; inp.classList.add('bg-slate-50', 'text-slate-800');
+                    inp.disabled = true;
+                    inp.classList.add('bg-slate-50', 'text-slate-800');
                 }
-                drawAllArrows('p3', quiz.func, quiz.isProp);
-                document.getElementById('p3-judgment-area').classList.remove('hidden');
-                document.getElementById('p3-judgment-area').classList.add('flex');
+
+                p3ArrowDrawn = true;
+                drawP3Arrows();
+                const judgmentArea = document.getElementById('p3-judgment-area');
+                judgmentArea.classList.remove('hidden');
+                judgmentArea.classList.add('flex');
             } else {
                 const msg = document.getElementById('p3-msg-error');
-                msg.classList.remove('hidden'); msg.classList.remove('bounce-in');
-                void msg.offsetWidth; msg.classList.add('bounce-in');
+                msg.classList.remove('hidden');
+                msg.classList.remove('bounce-in');
+                void msg.offsetWidth;
+                msg.classList.add('bounce-in');
             }
         });
 
-        // 리사이즈 대응
-        window.addEventListener('resize', () => {
-            if(currentPhase === 1 && arrowDrawn[1]) requestAnimationFrame(()=>drawAllArrows('p1', x=>2*x, true));
-            else if(currentPhase === 2 && arrowDrawn[2]) requestAnimationFrame(()=>drawAllArrows('p2', quizzes[2][currentQuizIdx[2]].func, quizzes[2][currentQuizIdx[2]].isProp));
-            else if(currentPhase === 3 && arrowDrawn[3]) requestAnimationFrame(()=>drawAllArrows('p3', quizzes[3][currentQuizIdx[3]].func, quizzes[3][currentQuizIdx[3]].isProp));
+        document.querySelectorAll('.p3-btn-judge').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const isYes = e.currentTarget.getAttribute('data-ans') === 'yes';
+                const stage = p3Stages[p3CurrentStage];
+                const isCorrect = (isYes === stage.isProp);
+
+                document.querySelectorAll('.p3-btn-judge').forEach(b => { b.disabled = true; b.classList.add('opacity-50'); });
+                e.currentTarget.classList.remove('opacity-50');
+
+                const fb = document.getElementById('p3-judge-feedback');
+                if(isCorrect) {
+                    e.currentTarget.classList.add(isYes ? 'bg-emerald-50' : 'bg-red-50', isYes ? 'border-emerald-500' : 'border-red-500');
+                    fb.innerHTML = `
+                        <div class="bounce-in text-center py-4 flex flex-col items-center gap-3 w-full bg-emerald-50 border-2 border-emerald-200 rounded-2xl px-4">
+                            <span class="text-emerald-600 font-extrabold text-2xl md:text-3xl flex items-center justify-center gap-2">
+                                🎉 정답입니다! 🎆
+                            </span>
+                            <span class="text-slate-800 font-bold text-lg md:text-xl mt-1" id="p3-hint-math">
+                                ${stage.hint.replace('정답입니다! ', '')}
+                            </span>
+                        </div>
+                    `;
+                    fb.classList.remove('hidden');
+                    fb.classList.add('flex');
+                    document.getElementById('p3-btn-next').classList.remove('hidden');
+                    renderMath();
+                } else {
+                    e.currentTarget.classList.add('bg-red-50', 'border-red-500');
+                    fb.innerHTML = `<div class="p-4 bg-red-50 border-2 border-red-200 rounded-2xl bounce-in text-center w-full"><span class="text-red-600 font-bold text-lg">앗, 틀렸습니다! 표 위아래 규칙이 같은지 확인해보세요.</span></div>`;
+                    fb.classList.remove('hidden');
+                    fb.classList.add('flex');
+                    
+                    setTimeout(() => {
+                        document.querySelectorAll('.p3-btn-judge').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'bg-emerald-50', 'bg-red-50', 'border-emerald-500', 'border-red-500'); });
+                        fb.classList.add('hidden');
+                        fb.classList.remove('flex');
+                    }, 2500);
+                }
+            });
         });
 
-        window.onload = () => switchPhase(1);
+        document.getElementById('p3-btn-next').addEventListener('click', () => {
+            p3CurrentStage++;
+            if(p3CurrentStage < p3Stages.length) {
+                loadP3Stage();
+            } else {
+                switchPhase(4);
+            }
+        });
+
+        function drawP3Arrows() {
+            if(!p3ArrowDrawn) return;
+            const svg = document.getElementById('p3-svg-overlay');
+            svg.innerHTML = '';
+            const stage = p3Stages[p3CurrentStage];
+            const y1 = stage.calc(1);
+
+            for(let target=2; target<=4; target++) {
+                drawArrowCurve(svg, 'p3', 1, target, true, `${target}배`, "#3b82f6");
+                if (stage.isProp) {
+                    drawArrowCurve(svg, 'p3', 1, target, false, `${target}배`, "#ea580c");
+                } else {
+                    const diff = stage.calc(target) - y1;
+                    const diffStr = diff >= 0 ? `+${diff}` : `${diff}`;
+                    drawArrowCurve(svg, 'p3', 1, target, false, diffStr, "#ef4444");
+                }
+            }
+        }
+
+        // ==========================================
+        // 글로벌 이벤트 바인딩
+        // ==========================================
+        window.addEventListener('resize', () => {
+            if(currentPhase === 1) requestAnimationFrame(drawPhase1Arrows);
+            else if(currentPhase === 2) requestAnimationFrame(drawP2Arrows);
+            else if(currentPhase === 3 && p3ArrowDrawn) requestAnimationFrame(drawP3Arrows);
+        });
+
+        window.onload = () => {
+            switchPhase(1);
+        };
     </script>
 </body>
 </html>
